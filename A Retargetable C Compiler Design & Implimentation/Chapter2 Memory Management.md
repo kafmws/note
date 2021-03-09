@@ -11,6 +11,7 @@
         - [分配区的释放](#分配区的释放)
     - [字符串的存储](#字符串的存储)
         - [字符串函数](#字符串函数)
+        - [字符串存储](#字符串存储)
   - [Programming Tips](#programming-tips)
 
 <!-- /code_chunk_output -->
@@ -24,13 +25,17 @@
 
 ### 分配区的组成
 
-`lcc`使用名为分配区（`arena`）的结构来动态管理内存，生存期相同的对象在同一个分配区中分配，释放时以分配区为单位释放。每一个分配区都用一个非负整数作为标识，通过这个标识来管理分配区内存的分配与释放。
+`lcc`使用名为分配区（`arena`）的结构来动态管理内存，生存期相同的对象在同一个分配区中分配，
+释放时以分配区为单位释放。每一个分配区都用一个非负整数作为标识，通过这个标识来管理分配区
+内存的分配与释放。
 
 每个分配区都是由一组很大的内存块构成的链表。
 <img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/arena图示.png" alt="arena图示" width="80%">
 
 `2-1图`表示了`1号分配区`的组成方式——一个单向链表。
-其中，`first[1]`是其头节点，`arena[1]`指向`1号分配区`当前用于分配内存的内存块，同时也是这个链表的尾指针。（`first[1]`、`arena[1]`均带有下标是因为这样的分配区有多个，它们的头节点和尾指针都用数组来管理）。每个内存块申请后在头部存放一个块头结构`struct block`（如`first[1]`），用于管理本块，同时形成链表。
+其中，`first[1]`是其头节点，`arena[1]`指向`1号分配区`当前用于分配内存的内存块，同时也是这个链表的尾指针。
+（`first[1]`、`arena[1]`均带有下标是因为这样的分配区有多个，它们的头节点和尾指针都用数组来管理）。
+每个内存块申请后在头部存放一个块头结构`struct block`（如`first[1]`），用于管理本块，同时形成链表。
 
 内存块块头的数据结构定义如下，
 
@@ -42,27 +47,28 @@ struct block{
 };
 ```
 
-不难理解，`next`指向该分配区的下一个内存块，`limit`存储该内存块的最大地址，`avail`指向块中可分配区域的首地址。即从`avail`到`limit`之间的空间都是未分配的。
+不难理解，`next`指向该分配区的下一个内存块，`limit`存储该内存块的最大地址，`avail`指向块中可分配区域的首地址。
+即从`avail`到`limit`之间的空间都是未分配的。
 
 ```ditaa {cmd=true args=["-E"] hide=true}
-                          /-+--------+              +--------+
-                          | |  next  |------------->|  next  |      ------------->...
-                          | +--------+              +--------+
-            struct block -+ | avail  |--+           | avail  |--+  
-                          | +--------+  |           +--------+  |  
-                          | | limit  |--+-+         | limit  |--+-+
-                          +-+--------+  | |         +--------+  | |
-                          | |  cCCC  |  | |         |        |  | |
-                          | |        |  | |         |        |  | |
-                          | |  used  |  | |         |        |  | |
-                          | |        |  | |         |  ...   |  | |
-      memmory allocation -+ |        |  | |         |        |  | |
-                          | +--------+<-+ |         |        |  | |
-                          | |        |    |         |        |  . |
-                          | |  ...   |    |         |        |  .
-                          | |        |    |         |        |  .
-                          | |        |    |         |        |
-                          \-+--------+<---+         +--------+
+                      /-+--------+              +--------+
+                      | |  next  |------------->|  next  |      ------------->...
+                      | +--------+              +--------+
+        struct block -+ | avail  |--+           | avail  |--+  
+                      | +--------+  |           +--------+  |  
+                      | | limit  |--+-+         | limit  |--+-+
+                      +-+--------+  | |         +--------+  | |
+                      | |  cCCC  |  | |         |        |  | |
+                      | |        |  | |         |        |  | |
+                      | |  used  |  | |         |        |  | |
+                      | |        |  | |         |  ...   |  | |
+  memmory allocation -+ |        |  | |         |        |  | |
+                      | +--------+<-+ |         |        |  | |
+                      | |        |    |         |        |  . |
+                      | |  ...   |    |         |        |  .
+                      | |        |    |         |        |  .
+                      | |        |    |         |        |
+                      \-+--------+<---+         +--------+
 ```
 
 `lcc`定义了三个`arena`，由数组将头结点和尾指针组织起来，
@@ -200,14 +206,16 @@ void deallocate(unsigned a) {
 
 ### 字符串的存储
 
-`lcc`中将字符串存储在一个字符串的`哈希表`中，每个字符串只保留一个副本，这样可以==通过比较字符串地址来确定字符串是否相等，并且节约了空间==。（哈希表的原理在此不做过多介绍。）
+`lcc`中将字符串存储在一个字符串的`哈希表`中，每个字符串只保留一个副本。
+这样可以==通过比较字符串地址来确定字符串是否相等，并且节约了空间==。
+（哈希表的原理在此不做过多介绍。）
 
 ##### 字符串函数
 
 ```C
-extern char * string(const char *str);//复制从str开始，以'\0'即(null)为结束标志的字符串，返回字符串起始位置
-extern char *stringn(const char *str, int len);//复制从str开始的可包括'\0'的字符串的前len个字节，返回字符串起始位置
-extern char *stringd(long n);//将整数n转为字符串并返回起始位置
+extern char * string(const char *str);//复制从str开始，以'\0'即(null)为结束标志的字符串，返回字符串首地址
+extern char *stringn(const char *str, int len);//复制从str开始的可包括'\0'的字符串的前len个字节，返回字符串首地址
+extern char *stringd(long n);//将整数n转为字符串并返回首地址
 /*3.x版本的声明为stringd(int n)，ANSI C规定long的长度不小于int，
 某些环境下int可能只占2个字节而long基本上不少于4字节，选择long尽量支持更大的范围*/
 ```
@@ -246,6 +254,7 @@ char *stringd(long n) {
 ```
 
 经测试发现`stringd`的性能在其使用范围内优于`sprintf`，前者效率约为后者的`3`倍。
+~~为什么`sprintf`这么慢呢~~
 <img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/stringd_sprintf_test_compare.png" alt="stringd_sprintf_test_compare" width="40%">
 测试代码如下，
 <details>
@@ -318,20 +327,10 @@ int main() {
 </details>
 &emsp;
 
-`lcc`中字符串在数组+链表（拉链法解决冲突）实现的哈希表中管理，具体存储结构如下，
-
-```C
-static struct string {
-	char *str;
-	int len;
-	struct string *link;
-} *buckets[1024];
-```
-
-
-`stringn`实现了字符串生成（从缓冲区中复制出来），并且检查字符串表中是否存在该字符串，若不存在则把该串加入表中然后返回字符串地址，否则直接返回其地址。
-该字符串表采用哈希方法存储字符串，对字符串的每一个字符进行一个随机数表的映射。
-对字符进行映射的函数如下,
+##### 字符串存储
+`lcc`使用一个字符串哈希表来存储字符串，并保证相同的字符串只保留一个副本。
+`stringn`对字符串的每一个字符进行一个随机数表的映射，对所有字符映射数值进一步处理作为hash值。
+将字符进行映射的函数如下,
 
 <details>
 <summary>点击展开代码</summary>
@@ -396,6 +395,18 @@ static int scatter[] = {	/* map characters to random values */
 </details>
 &emsp;
 
+字符串，也即字符串表中的基本单元的存储结构如下，因为有`len`域，
+`struct string`实际上可以存储含有`'\0'`或者说`null`的字符串。
+```C
+static struct string {
+	char *str;
+	int len;
+	struct string *link;
+} *buckets[1024];
+```
+
+`stringn`实现了字符串“生成”（如果需要的话）。函数首先计算传入字符串的hash值，检查该字符串是否已经存在，
+若不存在则复制该串加入表中然后返回字符串地址，否则直接返回表中副本地址。
 
 ```C
 char *stringn(const char *str, int len) {
@@ -407,36 +418,63 @@ char *stringn(const char *str, int len) {
 	assert(str);
 	for (h = 0, i = len, end = str; i > 0; i--)//计算hash值
 		h = (h<<1) + scatter[*(unsigned char *)end++];
+		//将*end作为数组下标，所以使用*(unsigned char *)end避免负值
 	h &= NELEMS(buckets)-1;//h = h % (NELEMS(buckets));//确定表中位置
-	for (p = buckets[h]; p; p = p->link)
+	for (p = buckets[h]; p; p = p->link)//遍历对应存储位置上的链表，检查该字符串是否已存在
 		if (len == p->len) {
 			const char *s1 = str;
 			char *s2 = p->str;
 			do {
-				if (s1 == end)
-					return p->str;
+				if (s1 == end)//len == p->len, s1==end时s2也到达末尾
+					return p->str;//存在相同串，返回副本
 			} while (*s1++ == *s2++);
 		}
 	{
-		static char *next, *strlimit;
+		static char *next, *strlimit;//静态局部变量默认初值为0
 		if (len + 1 >= strlimit - next) {
-			int n = len + 4*1024;
-			next = allocate(n, PERM);
-			strlimit = next + n;
+			//第一次使用时以及空间不够时申请新的内存空间，地址范围为[next, strlimit)
+			int n = len + 4*1024;//至少4KB
+			next = allocate(n, PERM);//next始终是当前可用空间的起始字节。
+			//PERM是可作为下标使用的枚举值，表示生命周期为永久的分配区(permanent)
+			strlimit = next + n;//strlimit指向最后一字节的下一个字节
 		}
-		NEW(p, PERM);
+		NEW(p, PERM);//申请struct string结构体空间
 		p->len = len;
-		for (p->str = next; str < end; )
+		for (p->str = next; str < end; )//复制字符串到字符串空间，next后移
 			*next++ = *str++;
-		*next++ = 0;
+		*next++ = 0;//补充'\0'
 		p->link = buckets[h];
-		buckets[h] = p;
-		return p->str;
+		buckets[h] = p;//头插入链表
+		return p->str;//返回字符串首地址
 	}
 }
 ```
 
+不难理解，整个字符串表呈如下的结构：
 
+```ditaa {cmd="true" args=["-E"]}
+                                                     +---------------------+
++----+----+----+----+---------------+    +-----------+=-->+------------+   |
+|s.s |... |... |s.s |struct string  +----+------\    :    |   cEEE     |   |
++-+--+-+--+-+--+-+--+-------+-------+    |      |    :    |  string1   |   |
+  |    |    |    |          |            |      |    :    |            |   |
+  v    v    v    v          v            |      |  /-+--->+------------+   |
+  .    .    .    .  +---------------+    |      |  | |    |   cAAA     |   |
+  .    .    .    .  |struct string  +----+=-----+--/ |    |  string2   |   |
+  .    .    .    .  +-------+-------+    |      \=---+--->+------------+   |
+  .    .    .    .          |            |           |    |            |   |
+                            v            |           |    |            |   |
+                    +---------------+    |           |    |   cCCC     |   |
+                    |struct string  +----/           |    |  string3   |   |
+                    +-------+-------+                |    |            |   |
+                            |                        |    |            |   |
+                            v                        |    +------------+   |
+                        +------+                     |    |   unused   |   |
+                        | NULL |                     |    |    ...     |   |
+                        +------+                     :    +------------+   |
+                                                     +---------------------+
+                                                        arena[PERM]中某个内存块
+```
 
 ---
 
@@ -477,8 +515,12 @@ if(ap->limit - ap->avail < n){
 ---
 
 关于未用宏或常量代替的数值，如`struct string{} *bucket[1024]`。
-在一般认识中，为了更好的可读性或者说表意性，
-对于此类数值量可用`#define STRING_HT_SIZE 1024`等代替，
-而此处仍然使用数值量进行定义，但是在具体使用如计算具体`hash`位置时以`NELEMS(bucket)`代替，预处理后，`NELEMS(bucket)`扩展为`((int)(sizeof (bucket)/sizeof ((bucket)[0])))`在编译期直接计算为`1024`，从而与宏有类似的效率。
+在一般认识中，为了更好的可读性或者说表意性，对于此类数值量可用`#define STRING_HT_SIZE 1024`等代替，
+而此处仍然使用数值量进行定义，但是在具体使用时以`NELEMS(bucket)`代替（如`hash`位置的具体计算），
+应当是预处理后，`NELEMS(bucket)`扩展为`((int)(sizeof (bucket)/sizeof ((bucket)[0])))`在编译期直接计算为`1024`，从而与宏有类似的效率。
+
+---
+
+> 传统的建议是哈希表的大小应该取一个素数，而如果取成`2`的幂，可以使用`掩码（masking）运算`代替取模运算，得到更好的效率。显然`Java`中`HashMap`的设计者也利用了这一点。
 
 ---

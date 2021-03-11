@@ -155,7 +155,7 @@ void *allocate(unsigned long n, unsigned a) {
             freeblocks = freeblocks->next;
             ap = ap->next;
         } else
-            {/*/*freeblocks为空，申请新的内存块，大小为 对齐的struct block字节数(存放表头结构)
+            {/*freeblocks为空，申请新的内存块，大小为 对齐的struct block字节数(存放表头结构)
             + 调用allocate时要求的n个字节 + 10KB字节对齐后的字节数(用于后续分配的内存块大小)*/
                 unsigned m = sizeof (union header) + n + roundup(10*1024, sizeof (union align));
                 ap->next = malloc(m);//将申请的新内存块挂到链表尾部
@@ -216,8 +216,10 @@ void deallocate(unsigned a) {
 extern char * string(const char *str);//复制从str开始，以'\0'即(null)为结束标志的字符串，返回字符串首地址
 extern char *stringn(const char *str, int len);//复制从str开始的可包括'\0'的字符串的前len个字节，返回字符串首地址
 extern char *stringd(long n);//将整数n转为字符串并返回首地址
-/*3.x版本的声明为stringd(int n)，ANSI C规定long的长度不小于int，
-某些环境下int可能只占2个字节而long基本上不少于4字节，选择long尽量支持更大的范围*/
+/*
+3.x版本的声明为stringd(int n)，ANSI C规定long的长度不小于int，
+某些环境下int可能只占2个字节而long基本上不少于4字节，选择long尽量支持更大的范围
+*/
 ```
 
 `string`、`stringd`均调用了`stringn`。
@@ -249,8 +251,10 @@ char *stringd(long n) {
 		*--s = '-';//处理符号
 	return stringn(s, str + sizeof (str) - s);//从缓冲区中复制结果并返回，同样不包括'\0'
 }
-/*由于ANSI C允许不同的机器对于负数取模有不同的处理方式，
-因此先计算绝对值大小，最后在处理符号。*/
+/*
+由于ANSI C允许不同的机器对于负数取模有不同的处理方式，
+因此先计算绝对值大小，最后在处理符号。
+*/
 ```
 
 经测试发现`stringd`的性能在其使用范围内优于`sprintf`，前者效率约为后者的`3`倍。

@@ -189,6 +189,7 @@ void *allocate(unsigned long n, unsigned a) {
 void *newarray(unsigned long m, unsigned long n, unsigned a) {
   return allocate(m * n, a);
 }
+
 void deallocate(unsigned a) {
   assert(a < NELEMS(arena));
   arena[a]->next = freeblocks;

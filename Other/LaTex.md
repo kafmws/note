@@ -45,3 +45,7 @@ $$ \sum_{\begin{subarray}{l}
     0\le i\le n \\
     j\in \mathbb{R}
 \end{subarray}}^j $$
+
+- 其他
+\max
+\ldots，\cdots，\vdots，\ddots \dot

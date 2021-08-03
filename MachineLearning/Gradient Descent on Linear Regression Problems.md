@@ -3,25 +3,34 @@
 <!-- code_chunk_output -->
 
 - [Ch.02 Gradient Descent on Linear Regression Problems](#ch02-gradient-descent-on-linear-regression-problems)
-    - [线性回归(Linear Regression)](#线性回归linear-regression)
-    - [模型表示](#模型表示)
-    - [代价函数(Cost function)](#代价函数cost-function)
-      - [代价函数的图形表示](#代价函数的图形表示)
-    - [梯度下降(Gradient Descent)](#梯度下降gradient-descent)
-      - [学习率](#学习率)
-      - [同步更新](#同步更新)
+  - [1. 单元梯度下降](#1-单元梯度下降)
+    - [1.1 线性回归(Linear Regression)](#11-线性回归linear-regression)
+    - [1.2 模型表示](#12-模型表示)
+    - [1.3 代价函数(cost function)](#13-代价函数cost-function)
+      - [1.3.1 代价函数的图形表示](#131-代价函数的图形表示)
+    - [1.4 梯度下降(Gradient Descent)](#14-梯度下降gradient-descent)
+      - [1.4.1 学习率(learning rate)](#141-学习率learning-rate)
+      - [1.4.2 同步更新(simultaneous update)](#142-同步更新simultaneous-update)
+    - [1.5 线性回归中的梯度下降](#15-线性回归中的梯度下降)
+    - [1.6 不同的梯度下降算法](#16-不同的梯度下降算法)
+  - [2. 多元梯度下降](#2-多元梯度下降)
 
 <!-- /code_chunk_output -->
 
 # Ch.02 Gradient Descent on Linear Regression Problems
 
-### 线性回归(Linear Regression)
+## 1. 单元梯度下降
+
+本节中有一些共同部分与[多元梯度下降](#多元梯度下降)一节共享
+
+### 1.1 线性回归(Linear Regression)
+
 回归，即使用一条曲线拟合数据，从而根据输入变量预测结果
 线性回归即回归方程的**系数均为线性**
 线性回归问题要确定回归方程的各个系数从而得到回归方程，这实际上是一个求解最小值（使回归方程与数据样本的距离最小）的问题；
 在`Machine Learning`中，线性回归是一类监督学习问题
 
-### 模型表示
+### 1.2 模型表示
 
 $ x^{(i)},y^{(i)} $ 分别表示数据集中第 $ i $ 项的输入变量/输入特征，和输出/目标量
 e.g.: 房价预测问题中，房子的大小、离市中心的距离等都可作为或共同作为 $ x $，而实际交易的房价为 $ y $
@@ -40,7 +49,7 @@ $$ h(x) = \theta_0 + \theta_1x $$在更一般的情形中，$ h(x) $ 可表示�
 
 ---
 
-### 代价函数(Cost function)
+### 1.3 代价函数(cost function)
 
 使用`cost function`来衡量`hypothesis`的准确程度
 `Cost function` 本质上是一种平均值，它计算了以样本的 $ x $ 作为输入时，$ h(x) $ 与实际 $ y $ 的平均误差
@@ -58,17 +67,19 @@ $$ J(\theta_0,\theta_1) = \frac{1}{2m}\sum_{i=1}^m {(\hat{y_i}-y_i)}^2 = \frac{1
 $$
 J(\theta) = 0 \quad \Rightarrow \quad h_\theta(x^{(i)}) \equiv y^{(i)}
 \qquad\qquad
-(i = 0,1,2...m)
+(i = 1,2,3...m)
 $$
 
 代价函数也被称为平均误差函数(`Squared error function`)、均方误差(`Mean squared error`)
 
 由此，$ J(\theta_0,\theta_1) $ 越小，$ h_\theta $ 与训练集的样本就越接近，即可通过寻找 $ J_{\min}(\theta_0,\theta_1) $ 来确定 $ h_\theta $
 
-#### 代价函数的图形表示
+#### 1.3.1 代价函数的图形表示
 函数图像可以直观反映出函数值，对于更简单的情形，如： $ h(x) = \theta_1x $
 $ J(\theta_1) $ 可能是类似下面的形状
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/J(θ)示例.png" alt="J(θ)示例" style="clear:both;display:block;margin:auto;" width="60%">
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/J(θ)示例.png" alt="J(θ)示例" width="40%">
+
 可以清楚看出 $ \theta $ 的不同取值对应的代价大小
 
 当 $ h(x) = \theta_0 + \theta_1x $ 即 $ J(\theta) $ 为二元函数时，函数图像是三维的
@@ -77,11 +88,11 @@ $ J(\theta_1) $ 可能是类似下面的形状
 <img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/等高图示例.png" alt="等高图示例" width="50%">
 其中，同色线表示参数取值对应的函数值相等，此时相对于每一点函数值的绝对大小我们更关注相对大小
 
-借助代价函数及其图像，我们估计`hypothesis`中的参数取值，梯度下降`Gradient Descent`是一种常用手段
+借助代价函数及其图像，我们可以估计`hypothesis`中的参数取值，使用梯度下降(`Gradient Descent`)算法确定 $ \theta $ 的取值是一种常用手段
 
 ---
 
-### 梯度下降(Gradient Descent)
+### 1.4 梯度下降(Gradient Descent)
 
 **沿梯度的反方向减小函数值**，这是梯度下降的基本思想
 
@@ -117,11 +128,61 @@ $$
 
 上式中被减去的偏导项即各坐标轴方向上的导数，即每个自变量向函数值减小的方向变化
 
-#### 学习率
-在上式中系数 $ \alpha $ 称为==学习率==，它决定了每次向 $ J_{\min} $ 移动的步伐大小
+函数值收敛到 $ J_{\min} $ 后，各方向导数均为 $ 0 $ ， $ \theta $ 不再变化，这一点可以作为算法的终止条件
+
+对样本数据来说， $ h_\theta $ 在每一次迭代后都变得更加准确，下图中除起始位置外每一个星号表示一次迭代(下降)的落脚点
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/梯度下降过程示例.png" alt="梯度下降过程示例" width="60%">
+
+#### 1.4.1 学习率(learning rate)
+
+在上式中系数 $ \alpha $ 称为==学习率==，它影响每次向 $ J_{\min} $ 移动的步伐大小
  $ \alpha $ 选取较大则算法迭代次数较少，$ \alpha $ 选取较小则算法迭代次数较多，此外
 - $ \alpha $ 设置过大可能导致最小值被跨过，代价不减反升，甚至导致迭代过程发散，无法收敛至 $ J_{\min} $ 
 - $ \alpha $ 设置过小会使算法迭代次数过多，导致性能问题
 
-==达到 $ J_{\min} $ 后，各方向上导数均为0，==
-#### 同步更新
+因此， $ \alpha $ 需要设置为一个合理的值
+
+此外，即使 $ \alpha $ 是一个固定的值，每次迭代的移动步长也会随着斜率减小而减小，从而到达极小值点
+
+#### 1.4.2 同步更新(simultaneous update)
+
+梯度下降算法中，所有 $ \theta $ 参数需要==同步更新==
+即在当前位置计算出所有新的 $ \theta $ 后再一起更新；在同一轮 $ \theta $ 的计算中，不能使用刚计算出的 $ \theta_j $ 计算 $ \theta_{j+1} $ 的值
+> 用当前坐标完整计算出下一个坐标后，同时更新坐标每个分量，而非逐步更新坐标的各个分量
+> 使用 $ ( \theta_0, \theta_1, \cdots \theta_n) $ 计算出 $ ( \theta_0', \theta_1', \cdots \theta_n') $ ，再用后者做下一轮迭代，而非计算出 $ \theta_0' $ 后用 $ ( \theta_0', \theta_1, \cdots \theta_n) $ 计算 $ \theta_1' $ 
+
+- 应用示例
+
+以一个线性回归问题为例，若假设函数为 $ h(x) = \theta_0 + \theta_1x $，代价函数为 $ J(\theta_0, \theta_1) = \dfrac{1}{2m} \sum\limits_{i=1}^{m}(h(x^{(i)}) - y^{(i)})^2 $
+则对应的梯度下降过程为：
+
+\(
+  \begin{aligned}
+   \text{repeat until convergence: }& \lbrace \newline \theta_0 &:= \theta_0 - \alpha \frac{1}{m} \sum\limits_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \newline \theta_1 &:= \theta_1 - \alpha \frac{1}{m} \sum\limits_{i=1}^{m}\left((h_\theta(x^{(i)}) - y^{(i)}) x^{(i)}\right) \newline &\rbrace
+  \end{aligned}
+\)
+
+收敛后得到的 $ \theta_0, \theta_1 $ 即为拟合数据代价最小的 $ h(x) $ ，给定一个输入 $ x $，即可由 $ h(x) $ 给出一个预测结果
+
+---
+
+### 1.5 线性回归中的梯度下降
+
+结论：
+&emsp;&emsp;所有线性回归问题中代价函数的图像一定是碗状的（凸的二次函数），这意味着线性回归问题中梯度下降算法得到的最小值一定是全局最小值，并且不存在其它局部最小值
+
+对于更一般的函数，梯度下降收敛到某个局部最小值，也就是说，算法中初始位置不同可能导致结果不同
+
+> 关于凸函数(`convex function`)
+国内外或不同层次领域对凸函数的定义可能不同，此处凸函数定义为二阶导数大于0
+
+---
+
+### 1.6 不同的梯度下降算法
+
+在上述的梯度下降算法中，每次迭代我们都遍历了一遍训练集中的所有数据，这种梯度下降称为`Batch gradient descent`.
+
+某些梯度下降算法每次迭代仅遍历样本数据得一个子集
+
+## 2. 多元梯度下降

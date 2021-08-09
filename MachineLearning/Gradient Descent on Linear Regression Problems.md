@@ -14,6 +14,18 @@
     - [1.5 线性回归中的梯度下降](#15-线性回归中的梯度下降)
     - [1.6 不同的梯度下降算法](#16-不同的梯度下降算法)
   - [2. 多元梯度下降](#2-多元梯度下降)
+    - [2.1 单变量梯度下降推广](#21-单变量梯度下降推广)
+    - [2.2 多元梯度下降的优化](#22-多元梯度下降的优化)
+      - [2.2.1 特征缩放(Feature Scaling)](#221-特征缩放feature-scaling)
+      - [2.2.2 均值归一化(mean normalization)](#222-均值归一化mean-normalization)
+    - [2.3 梯度下降效果的检验与学习率的选择](#23-梯度下降效果的检验与学习率的选择)
+      - [2.3.1 梯度下降效果的检验](#231-梯度下降效果的检验)
+      - [2.3.2 学习率 $ \alpha $ 的选择](#232-学习率-alpha-的选择)
+  - [2.4 多项式回归中的特征](#24-多项式回归中的特征)
+  - [3. 最小化代价函数的正规方程解法](#3-最小化代价函数的正规方程解法)
+    - [3.1 正规方程求解参数 $ \theta $](#31-正规方程求解参数-theta)
+    - [3.2 梯度下降与正规方程的比较](#32-梯度下降与正规方程的比较)
+    - [3.3 正规方程的不可逆情况](#33-正规方程的不可逆情况)
 
 <!-- /code_chunk_output -->
 
@@ -43,7 +55,18 @@ $ X, Y$ 用来表示输入变量与输出变量的定义域与值域
 监督学习的目标是：对于给定的训练集，找到一个函数（映射） $ h: X \to Y $，$ h(x) $ 即为根据 $ x $ 预测 $ y $ 的模型
 
 在`Linear Regression`问题中使用线性函数拟合数据时，$ h_\theta $ 常被定义为
-$$ h(x) = \theta_0 + \theta_1x $$在更一般的情形中，$ h(x) $ 可表示为 $$  h(x) = \theta_0 + \theta_1x + \theta_2x^2 + \cdots + \theta_nx^n $$由于历史原因，$ h(x) $ 通常称为 `hypothesis`，或记为 $ h_\theta $、$ h $ 等
+
+\[
+h(x) = \theta_0 + \theta_1x
+\]
+
+在更一般的情形中， $ h(x) $ 可表示为
+
+\[
+h(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + \cdots + \theta_nx_n
+\]
+
+由于历史原因，$ h(x) $ 通常称为 `hypothesis`，或记为 $ h_\theta $、$ h $ 等
 
 选择了某种形式的 $ h_\theta(x) $ 后需要确定各个 $ \theta $ 参数，得到拟合数据的函数
 
@@ -56,7 +79,10 @@ $$ h(x) = \theta_0 + \theta_1x $$在更一般的情形中，$ h(x) $ 可表示�
 因此可以反映 $ h_\theta $ 的好坏程度，也可通过求解代价函数的最小值寻找拟合数据最准确的 $ h_\theta $
 
 当使用线性函数 $ h(x) = \theta_0 + \theta_1x $ 拟合数据时，通常有一个简单实用的代价函数：
-$$ J(\theta_0,\theta_1) = \frac{1}{2m}\sum_{i=1}^m {(\hat{y_i}-y_i)}^2 = \frac{1}{2m}\sum_{i=1}^m {(h_\theta(x_i)-y_i)}^2 $$
+
+\[
+J(\theta_0,\theta_1) = \frac{1}{2m}\sum_{i=1}^m {(\hat{y_i}-y_i)}^2 = \frac{1}{2m}\sum_{i=1}^m {(h_\theta(x_i)-y_i)}^2
+\]
 
 显然，`cost function` $ J $ 只是收集了 $ h_\theta $ 与实际值误差的平方和与并做了平均
 
@@ -64,11 +90,12 @@ $$ J(\theta_0,\theta_1) = \frac{1}{2m}\sum_{i=1}^m {(\hat{y_i}-y_i)}^2 = \frac{1
 （ $\frac{1}{m}$ 乘以 $\frac{1}{2}$ 仅仅为了约去后面求导产生的系数 $ 2 $ 以简化计算，这只会改变函数在纵向轴的高度，而不改变形状及最优解）
 
 推论：
-$$
+
+\[
 J(\theta) = 0 \quad \Rightarrow \quad h_\theta(x^{(i)}) \equiv y^{(i)}
 \qquad\qquad
 (i = 1,2,3...m)
-$$
+\]
 
 代价函数也被称为平均误差函数(`Squared error function`)、均方误差(`Mean squared error`)
 
@@ -78,14 +105,14 @@ $$
 函数图像可以直观反映出函数值，对于更简单的情形，如： $ h(x) = \theta_1x $
 $ J(\theta_1) $ 可能是类似下面的形状
 
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/J(θ)示例.png" alt="J(θ)示例" width="40%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/J(θ)示例.png" alt="J(θ)示例" width="30%">
 
 可以清楚看出 $ \theta $ 的不同取值对应的代价大小
 
 当 $ h(x) = \theta_0 + \theta_1x $ 即 $ J(\theta) $ 为二元函数时，函数图像是三维的
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/两参数代价函数示例图像.png" alt="两参数代价函数示例图像" width="50%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/两参数代价函数示例图像.png" alt="两参数代价函数示例图像" width="40%">
 三维函数图像经常使用等高图(`contour plot`)表示，类似地理学中的等高线
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/等高图示例.png" alt="等高图示例" width="50%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/等高图示例.png" alt="等高图示例" width="40%">
 其中，同色线表示参数取值对应的函数值相等，此时相对于每一点函数值的绝对大小我们更关注相对大小
 
 借助代价函数及其图像，我们可以估计`hypothesis`中的参数取值，使用梯度下降(`Gradient Descent`)算法确定 $ \theta $ 的取值是一种常用手段
@@ -100,8 +127,10 @@ $ J(\theta_1) $ 可能是类似下面的形状
 我们需要向函数值减小最快的方向（梯度反方向）移动
 
 > 梯度即坐标轴方向的方向导数组成的向量，该向量方向即是函数在该点变化最快、变化率最大的方向。同理，其反方向也即函数减小最快的方向
- $ \quad\,\, $ 若$ z = f(x,y) $ 在平面 $ \mathrm{D} $ 上具有一阶连续偏导，点 $ p \in \mathrm{D} $ ，则点 $ p $ 的梯度 $ \nabla $ 计算为
- $$ \nabla = \frac{\partial f}{\partial x}\vec{i} + \frac{\partial f}{\partial y}\vec{j}$$
+ $ \quad\,\, $ 若 $ z = f(x,y) $ 在平面 $ \mathrm{D} $ 上具有一阶连续偏导，点 $ p \in \mathrm{D} $ ，则点 $ p $ 的梯度 $ \nabla $ 计算为
+ \[
+ \nabla = \frac{\partial f}{\partial x}\vec{i} + \frac{\partial f}{\partial y}\vec{j}
+ \]
 
 或者
 > 函数值的变化可以分解为表示参数的坐标轴方向上的变化
@@ -120,13 +149,13 @@ $ J(\theta_1) $ 可能是类似下面的形状
 
 即
 
-$$
-{\theta}_i = {\theta}_i - \alpha\frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1, \theta_2 \cdots  \theta_n)
+\[
+{\theta}_j = {\theta}_j - \alpha\frac{\partial}{\partial \theta_0}J(\theta_0, \theta_1, \theta_2 \cdots  \theta_n)
 \qquad\qquad
-(i = 0,1,2...n)
-$$
+(j = 0,1,2...n)
+\]
 
-上式中被减去的偏导项即各坐标轴方向上的导数，即每个自变量向函数值减小的方向变化
+上式中被减去的偏导项即各坐标轴方向上的导数，即每个参数 $ \theta $ 向函数值减小的方向变化
 
 函数值收敛到 $ J_{\min} $ 后，各方向导数均为 $ 0 $ ， $ \theta $ 不再变化，这一点可以作为算法的终止条件
 
@@ -141,7 +170,7 @@ $$
 - $ \alpha $ 设置过大可能导致最小值被跨过，代价不减反升，甚至导致迭代过程发散，无法收敛至 $ J_{\min} $ 
 - $ \alpha $ 设置过小会使算法迭代次数过多，导致性能问题
 
-因此， $ \alpha $ 需要设置为一个合理的值
+因此， $ \alpha $ 需要设置为一个合理的值，数学表明，若 $ \alpha $ 足够小， 在每次迭代中 $ J(\theta) $ 一定是递减的
 
 此外，即使 $ \alpha $ 是一个固定的值，每次迭代的移动步长也会随着斜率减小而减小，从而到达极小值点
 
@@ -159,7 +188,7 @@ $$
 
 \(
   \begin{aligned}
-   \text{repeat until convergence: }& \lbrace \newline \theta_0 &:= \theta_0 - \alpha \frac{1}{m} \sum\limits_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \newline \theta_1 &:= \theta_1 - \alpha \frac{1}{m} \sum\limits_{i=1}^{m}\left((h_\theta(x^{(i)}) - y^{(i)}) x^{(i)}\right) \newline &\rbrace
+   \text{repeat until convergence: }& \lbrace \newline \theta_0 &:= \theta_0 - \alpha \frac{1}{m} \sum\limits_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \newline \theta_1 &:= \theta_1 - \alpha \frac{1}{m} \sum\limits_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \cdot x^{(i)} \newline &\rbrace
   \end{aligned}
 \)
 
@@ -185,4 +214,151 @@ $$
 
 某些梯度下降算法每次迭代仅遍历样本数据得一个子集
 
+---
+
 ## 2. 多元梯度下降
+
+### 2.1 单变量梯度下降推广
+
+使用 $ n $ 表示特征数量
+使用 $ x^{(i)}_j $ 表示第 $ i $ 个样本的第 $ j $ 个特征
+
+多元梯度下降的一般形式可以表示为
+
+\[
+h_\theta(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + \cdots + \theta_nx_n
+\]
+
+亦即
+
+\[
+h_\theta(x) = \begin{bmatrix} \theta_0 \theta_1 \cdots \theta_n \end{bmatrix}
+\begin{bmatrix}
+  x_0 \\ x_1 \\ \vdots \\ x_n
+\end{bmatrix} = \theta^Tx
+\]
+
+其中， $ x_0 \equiv 1 $ .
+
+此时代价函数为
+
+\[
+J(\theta_0,\theta_1 \cdots \theta_j) = \frac{1}{2m}\sum_{i=1}^m {(h_\theta(x^{(i)})-y^{(i)})}^2
+\]
+
+同理，单变量的梯度下降算法可以容易地推广到多元情况
+
+\[
+  \begin{aligned}
+   \text{repeat until convergence: }& \lbrace \\
+   \theta_j &:= \theta_j - \alpha \frac{1}{m} \sum\limits_{i=1}^{m} (h_\theta(x^{(i)}) - y^{(i)}) \cdot x_j^{(i)} \qquad\qquad (j = 0,1,2...n) \\
+   &\rbrace
+  \end{aligned}
+\]
+
+### 2.2 多元梯度下降的优化
+
+#### 2.2.1 特征缩放(Feature Scaling)
+
+==使所有特征处于相近的数量级==
+
+当存在多个特征时，特征变量可能处于不同的数量级，这可能造成梯度下降迭代次数过多而导致性能问题
+
+以两个特征 $ x_1 \in [100,999], x_2 \in [1,9] $ 为例
+- 若学习率 $ \alpha $ 适用于特征 $ x_1 $ 的数量级而设置相对小，每次迭代使 $ \theta_1 $ 改变量为 $ \Delta\theta $ ，则参数 $ \theta_2 $ 的变化量约为 $ \frac{\Delta\theta}{100} $ ，这个值太小而不利于在 $ \theta_2 $ 方向上下降，每次迭代 $ J(\theta) $ 的变化类似于下图
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/未特征缩放产生的性能问题示例1.png" alt="未特征缩放产生的性能问题示例1" width="50%">
+
+- 若学习率 $ \alpha $ 适用于特征 $ x_2 $ 的数量级而设置相对大，每次迭代使 $ \theta_2 $ 改变量为 $ \Delta\theta $ ，则参数 $ \theta_1 $ 的变化量约为 $ 100 \cdot  \Delta\theta $ ，这个值太大可能使代价函数在 $ \theta_1 $ 方向来回越过最优值，每次迭代 $ J(\theta) $ 的变化类似于下图
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/未特征缩放产生的性能问题示例2.png" alt="未特征缩放产生的性能问题示例2" width="50%">
+
+比较理想的情况是特征的取值在同一数量级或处于相近范围，`特征缩放`是一种有效的方法，`特征缩放`将特征 $ x $ 除以其取值范围（注意，**此处的取值范围具有实际意义的取值范围，而是数据集中的最值之差**），即 $ x_i = \frac{x_i}{x_{\max} - x_{\min}} $ ，**特征取值范围将被约束至 $ [-1,1] $ 内**
+如特征为`面积(平方米)`，取值范围 $ [0, 1000] $，则替换为`面积(千平方米)`，取值范围 $ [0, 1] $
+
+#### 2.2.2 均值归一化(mean normalization)
+
+`均值归一化`使特征的均值接近于 $ 0 $ ，得到一个相对对称的取值区间
+具体做法是使特征减去其均值（**数据集中该特征的平均值**），即使用 $ x_i - \mu_i $ 替换 $ x_i $ ，其中 $ \mu_i $ 为特征 $ x_i $ 的均值
+
+两种方法结合起来即为 $ x_i = \dfrac{x_i - \mu_i}{s_i} $ ，其中 $ {s_i} $ 为 $ x_{max} - x_{min} $ 或`标准差(standard deviation)`
+通过特征缩放和均值归一化可以显著减少梯度下降的迭代次数，从而加快梯度下降算法
+
+### 2.3 梯度下降效果的检验与学习率的选择
+
+#### 2.3.1 梯度下降效果的检验
+
+以迭代次数为横坐标， $ J(\theta) $ 为纵坐标绘图，图像应与下图类似
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/J(θ)随迭代次数递减示意图.png" alt="J(θ)随迭代次数递减示意图" width="40%">
+
+曲线趋近于水平时 $ J(\theta) $ 接近收敛，例如当某次迭代后 $ \Delta J(\theta) < 10^{-3} $ 时认为已到达结果
+
+#### 2.3.2 学习率 $ \alpha $ 的选择
+
+若 $ J(\theta) - numbers \ \ of \ \ iterations $ 图像呈现为递增或递减后递增等情形，一般情况下需要减小 $ \alpha $ 
+
+仍然需留意， $ \alpha $ 取值过小会使迭代次数增多产生性能问题； $ \alpha $ 取值过大代价可能不减反增且无法收敛；可设定一定序列如 $ 0.01, 0.1, 1 $ 等进行尝试，并最终尽可能大地选择学习率
+
+## 2.4 多项式回归中的特征
+
+实际上，特征不一定是简单原始的量，可以通过已有的特征组合出新特征，如物体的长和宽可以组合出面积特征
+
+同时，依据对函数图像地了解，可以通过二次项、三次项、平方根项等形式改变`hypothesis`来更好地拟合数据
+
+例如，当使用 $ h_\theta(x) = \theta_0 + \theta_1 x_1 $ 拟合下图的数据时，
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/多项式拟合数据示例.png" alt="多项式拟合数据示例" width="50%">
+
+若选择绿色线（三次函数）进行拟合，则假设函数可以设定为以下形式
+
+\[
+  h_\theta(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_3 \qquad\qquad (x_1 = size, \ x_2 = size^2, \ x_3 = size^3)
+\]
+
+若选择蓝色线（含有二分之一次方的多项式）进行拟合，则假设函数可以设定为以下形式
+
+\[
+  h_\theta(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 \qquad\qquad (x_1 = size, \ x_2 = \sqrt{size})
+\]
+
+如此形式，进行线性回归
+
+此外需要注意，==当对特征进行变换作为新的特征时，应适当使用特征缩放==，此时新特征的数量级可能和原有特征差别很大
+
+---
+
+## 3. 最小化代价函数的正规方程解法
+
+### 3.1 正规方程求解参数 $ \theta $
+
+设矩阵 $ X_{m×n} $ 表示 $ m $ 个样本的 $ n $ 个特征变量输入(包括对待 $ \theta_0 $ 的 $ 1 $ )， $ y $ 为样本的实际值
+则有
+
+\[
+  X \theta = y \  \Rightarrow \  \theta = (X^TX)^{-1}X^T y
+\]
+
+即通过解正规方程计算出 $ \theta $ 向量
+
+### 3.2 梯度下降与正规方程的比较
+
+| 梯度下降 | 正规方程|
+|:-----:|:-----:|
+需要选取恰当的学习率 | 无需选择学习率
+迭代算法 | 非迭代算法
+$ O(kn^2) $ | $ O (n^3) $ ，计算 $ (X^TX)^{-1} $
+特征变量个数 $ n $ 可以很大| n 太大(约 $ 10,000 $ )时矩阵求解过慢
+进行`特征缩放`可以提升效率 | 无需`特征缩放`
+
+### 3.3 正规方程的不可逆情况
+
+对于公式 $ \theta = (X^TX)^{-1}X^T y $ ， $ (X^TX)^{-1} $ 不一定总是存在，然而大多数线性代数库会提供求解伪逆的方法
+如 `Octave/MATLAB` 中的 `pinv()` 函数返回一个近似的逆矩阵
+从而可以得到 $ \theta $ 的近似值，逼近 $ J(\theta) $ 的最小值，使正规方程解法在工程上具有可能性
+
+此外，以下原因通常会导致矩阵 $ X^TX $ 不可逆：
+- 冗余特征，特征变量中存在线性关系
+- 特征过多，如 $ m \lt n $ 时 (原讲义 $ m \le n $ )
+
+分别以 删去冗余特征、减少特征的个数或进行正规化 的方法进行处理
+
+2021/8/10

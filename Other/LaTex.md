@@ -46,6 +46,23 @@ $$ \sum_{\begin{subarray}{l}
     j\in \mathbb{R}
 \end{subarray}}^j $$
 
+- 希腊字母
+
+| 希腊字母小写、大 | LaTeX形式 | 希腊字母小写、大写 | LaTeX形式 |
+|:-----:|:-----:|:-----:|:-----:|
+|αα A	|\alpha A|	μμ N|	\mu N|
+|ββ B	|\beta B|	ξξ ΞΞ|	\xi \Xi|
+|γγ ΓΓ|	\gamma \Gamma|	o O	o O
+|δδ ΔΔ|	\delta \ Delta|	ππ ΠΠ	\pi \Pi
+|ϵϵ εε| E	\epsilon \varepsilon E	ρρ ϱϱ P	|\rho |\varrho P
+|ζζ Z	|\zeta Z	σσ ΣΣ	\sigma \Sigma
+|ηη H	|\eta H	ττ T	\tau T
+|θθ ϑϑ| ΘΘ	\theta \vartheta \Theta	υυ |ΥΥ	\u|psilon \Upsilon
+|ιι I	|\iota I	ϕϕ φφ ΦΦ	\phi \varphi |\Phi
+||κκ K	|\kappa K	χχ X	\chi X
+|λλ ΛΛ|	\lambda \Lambda	ψψ ΨΨ	\psi \Psi
+|μμ M	|\mu M	ωω ΩΩ	\omega \Omega
+
 - 其他
 \max
 \ldots，\cdots，\vdots，\ddots \dot

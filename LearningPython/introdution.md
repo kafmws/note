@@ -4,22 +4,34 @@
 
 - [Python及其标准库](#python及其标准库)
   - [基础使用](#基础使用)
+    - [选择](#选择)
     - [循环](#循环)
     - [import 的几种使用方式](#import-的几种使用方式)
     - [数值类型](#数值类型)
     - [字符串常用操作](#字符串常用操作)
     - [字符串的格式化](#字符串的格式化)
     - [异常处理](#异常处理)
+    - [函数](#函数)
   - [标准库](#标准库)
     - [turtle库](#turtle库)
     - [time库](#time库)
     - [random库](#random库)
+  - [Python内建类型](#python内建类型)
+- [第三方库](#第三方库)
+  - [PyInstaller](#pyinstaller)
 
 <!-- /code_chunk_output -->
 
 ## Python及其标准库
 
 ### 基础使用
+
+#### 选择
+
+`Python`支持一种选择语句形式的三元表达式
+```Python
+statemtentTrue if condition else statementFalse
+```
 
 #### 循环
 - `for ... in ...`循环
@@ -183,6 +195,73 @@ finally:            # 必定执行
 ```
 ---
 
+#### 函数
+
+- 可选参数
+
+可选参数一定在参数列表的最右边
+```Python
+def function_name(a, b, c, d=1):
+  statement...
+  return x    # 可以无返回值
+```
+
+- 可变参数
+
+参数列表最后增加一个参数，参数名前加`*`
+```Python
+def sumMul(a, *b):
+  res = 0
+  for i in b:
+    res += i * a
+  return res
+
+sumMul(2, 2, 3) #10
+```
+
+- 参数传递
+`Python`中参数可按位置与名称两种方式传递，两种方式不可混用
+```Python
+def test(a, b, c):
+  return a + b + c
+
+test(a, b, c)
+test(a=1, b=2, c=3)
+```
+
+- 返回值
+`Python`函数可有多个返回值（以元组形式返回）
+```Python
+def tp(a, b, c):
+  return a, b, c
+
+tp(1, 2, 3)   # (1, 2, 3)
+```
+
+- 在函数中使用全局变量
+
+`global`关键字指明组合类型变量为函数外定义的全局变量，或声明一个新的全局变量
+```Python
+ls = [1,2,3]
+
+def test():
+    # global ls
+    ls = [2]
+    print(ls[0])
+
+test()
+print(ls[0])
+```
+如上，若未以`global`声明列表`ls`，则函数中`ls`为一个局部变量，程序输出结果为`2\n1`；反之，`ls`被修改为`[2]`，程序输出`2\n2`
+
+- `lambda`函数
+```Python
+functionName = lambda <参数列表> : <statement>
+
+max = lambda x,y : x if x > y else y
+max(0,1)  # 1
+```
+
 ### 标准库
 
 Python标准库即随解释器安装的库，无需额外安装。
@@ -318,3 +397,21 @@ choice(seq)
 # 将序列seq中元素随机排列
 shuffle(seq)
 ```
+
+### Python内建类型
+
+## 第三方库
+
+### PyInstaller
+
+命令行工具，执行命令`pyinstaller -F filename.py`将 `.py` 编译为可执行文件
+
+目录下生成`_pycache_`、`build`、`dist`，其中`_pycache_`、`build`可以安全删除，`dist`目录下生成可执行文件
+
+| 参数 | 描述 |
+|:---:|:---:|
+|-h|帮助|
+|--clean|清理打包过程中的临时文件|
+|-D, --onedir|默认值，生成`dist`文件夹|
+|-F, --onefile|在`dist`文件夹中只生成独立的打包文件|
+|-i <图标文件名.ico>|指定可执行文件图标|

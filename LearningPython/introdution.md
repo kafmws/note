@@ -1,4 +1,4 @@
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=5 orderedList=false} -->
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
 
@@ -12,13 +12,23 @@
     - [字符串的格式化](#字符串的格式化)
     - [异常处理](#异常处理)
     - [函数](#函数)
+    - [Python内建类型](#python内建类型)
+      - [集合类型](#集合类型)
+      - [序列类型](#序列类型)
+        - [元组](#元组)
+        - [列表](#列表)
+        - [字典](#字典)
+    - [Python内建函数](#python内建函数)
+    - [文件操作](#文件操作)
+    - [CSV文件格式](#csv文件格式)
   - [标准库](#标准库)
     - [turtle库](#turtle库)
     - [time库](#time库)
     - [random库](#random库)
-  - [Python内建类型](#python内建类型)
 - [第三方库](#第三方库)
   - [PyInstaller](#pyinstaller)
+  - [jieba](#jieba)
+  - [wordcloud](#wordcloud)
 
 <!-- /code_chunk_output -->
 
@@ -262,6 +272,123 @@ max = lambda x,y : x if x > y else y
 max(0,1)  # 1
 ```
 
+#### Python内建类型
+
+##### 集合类型
+
+**无序**、**互异**、**不可修改**
+```Python
+A = {1, 'a', (1,2)}
+
+B = set('test')
+# B = {'t','e','s'}
+```
+
+- 集合操作符
+
+|集合操作符|操作|
+|:-----:|:----:|
+|\||并|
+|-|差|
+|&|交|
+|^|补|
+|<=或<|子集/包含|
+|>=或>|子集/包含|
+
+- 集合常用处理方法
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/Python集合处理方法.png" alt="Python集合常用处理方法" width="50%">
+
+##### 序列类型
+
+序列类型派生出`字符串类型`、`列表类型`和`元组类型`
+
+- 序列类型操作符
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/序列类型通用操作符.png" alt="序列类型通用操作符" width="50%">
+
+- 序列类型通用函数及方法
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/序列类型通用函数及方法.png" alt="序列类型通用函数及方法" width="50%">
+
+###### 元组
+
+元组**不可修改**(**数据保护**)，使用`()`或`tuple()`创建，元素间用`,`分隔
+可以不使用小括号
+```Python
+creature = "cat", "dog", "tiger", "human"
+
+def func():
+  return 1,2
+```
+
+###### 列表
+
+列表使用`[]`或`list()`创建，元素间用`,`分隔
+列表变量间传递引用
+
+- 列表类型操作函数和方法
+
+> `del`关键字 删除Python对象
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/列表类型操作函数和方法.png" alt="列表类型操作函数和方法" width="50%">
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/列表类型操作函数和方法2.png" alt="列表类型操作函数和方法2" width="50%">
+
+- [字符串](#字符串常用操作)
+
+###### 字典
+
+使用`{}`或`dict()`创建字典，字典中的键是无序的
+
+```Python
+dict = {Object: o, Object2:o2}
+dict[Object] == o   # True
+```
+
+使用`dict[key]`索引或插入键值对
+
+- 字典类型操作函数和方法
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/字典类型操作函数和方法.png" alt="字典类型操作函数和方法" width="50%">
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/字典类型操作函数和方法2.png" alt="字典类型操作函数和方法2" width="50%">
+
+#### Python内建函数
+
+```Python
+map(func, arg2)   # 将第一个参数的功能作用于第二个参数的每个元素
+```
+
+#### 文件操作
+
+（`Python`某种程度上移植了`C`的标准库）
+
+- 文件操作
+```Python
+fd = open("file_path", "open_mode"="rt")
+# processing
+fd.close()
+```
+
+- 文件打开方式
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/文件的打开方式.png" alt="文件的打开方式" width="50%">
+
+- 文件读写
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/文件读写函数.png" alt="文件读写函数" width="50%">
+
+#### CSV文件格式
+
+- `CSV`(`Comma-Separated Values`)，国际通用的一、二维数据存储格式，以`.csv`作为后缀
+- 每行一个一维数据，采用逗号分隔，无空行
+- 如果某个元素缺失，逗号仍保留
+- 二维数据的表头可以作为数据存储，也可以另行存储
+- 逗号为英文半角逗号，逗号与数据之间无额外空格
+
+---
+
 ### 标准库
 
 Python标准库即随解释器安装的库，无需额外安装。
@@ -398,8 +525,6 @@ choice(seq)
 shuffle(seq)
 ```
 
-### Python内建类型
-
 ## 第三方库
 
 ### PyInstaller
@@ -415,3 +540,69 @@ shuffle(seq)
 |-D, --onedir|默认值，生成`dist`文件夹|
 |-F, --onefile|在`dist`文件夹中只生成独立的打包文件|
 |-i <图标文件名.ico>|指定可执行文件图标|
+
+### jieba
+
+中文分词库
+- 通过词库确定汉字间的关联概率
+- 汉字间概率大的组成词组，形成分词结果
+- 可添加自定义词组
+
+`jieba`的工作模式：
+- 精确模式：文本精确切分，结果组合为原文本
+- 全模式：扫描出文本中所有可能词语，组合结果相对于原文有冗余
+- 搜索引擎模式：在精确模式的基础上对长词继续切分
+
+**使用示例**
+
+```Python
+jieba.lcut("中国是一个伟大的国家")
+# ['中国', '是', '一个', '伟大', '的', '国家']
+
+jieba.lcut("中国是一个伟大的国家", cut_all=True)
+# ['中国', '国是', '一个', '伟大', '的', '国家']
+
+jieba.lcut_for_search("美利坚合众国在北美洲")
+['美利', '合众', '美利坚', '合众国', '美利坚合众国', '在', '北美', '美洲', '北美洲']
+
+# 增加新词
+jieba.add_word("长长的新词)
+```
+
+### wordcloud
+
+词云展示第三方库，将一段文本转换为词云
+
+- `wordcloud`的基础使用
+```Python
+import wordcloud
+
+# 生成WordCloud对象
+w = wordcloud.WordCloud()
+'''
+WordCloud 的常用自定义参数
+width=600                     # 图像宽度
+height=200                    # 图像高度
+min_font_size=4               # 最小字号
+max_font_size                 # 最大字号，根据高度自动调节
+font_step=1                   # 字体字号的间隔步长
+font_path=None                # 指定字体文件的路径
+max_words=200                 # 词云显示的最大单词数量
+stop_words                    # 词云的排除词列表
+mask                          # 指定词云形状
+  >>>from scipy.misc import imread
+  >>>mk=imread("shape.png")
+  >>>w=WordCloud(mask=mk)
+background_color="black"      # 指定词云图片的背景颜色
+'''
+# 加载文本
+w.generate(txt)
+# 输出图片文件         
+w.to_file(filename)
+```
+
+- `wordcloud`的工作过程
+1. 分隔：以空格分割单词（中文文本需要预先分词并用空格连接~~好蠢~~）
+2. 统计：统计单词出现次数并过滤掉短单词
+3. 字体：根据统计结果设置字号
+4. 布局：设置颜色环境尺寸形成图云

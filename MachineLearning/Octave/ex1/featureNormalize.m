@@ -7,7 +7,7 @@ function [X_norm, mu, sigma] = featureNormalize(X)
 
 % You need to set these values correctly
 X_norm = X;
-mu = zeros(1, size(X, 2));
+mu = zeros(1, size(X, 2));   # 1 x number of features
 sigma = zeros(1, size(X, 2));
 
 % ====================== YOUR CODE HERE ======================
@@ -26,8 +26,15 @@ sigma = zeros(1, size(X, 2));
 % Hint: You might find the 'mean' and 'std' functions useful.
 %       
 
+m = size(X, 1);                                 
+n = size(X, 2);
+mu = sum(X) ./ m;
+sigma = sqrt(sum((X - mu) .^ 2) ./ (m - 1));
 
+% mu = mean(X);
+% sigma = std(X);
 
+X_norm = (X - mu) ./ sigma;
 
 
 

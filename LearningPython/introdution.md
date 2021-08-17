@@ -149,7 +149,7 @@ eval("python statement")          #执行字符串形式的Python语句
 - 字符串处理方法
 
 字符串类的一些方法
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/Python字符串类方法.png" alt="Python字符串类方法" width="80%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/Python字符串类方法.png" alt="Python字符串类方法" width="50%">
 
 #### 字符串的格式化
 
@@ -400,8 +400,8 @@ turtle库是`turtle`绘图体系的Python实现
 一只海龟作为画笔，控制海龟的运动轨迹形成图形，最小绘制单位为像素
 - turtle库的设计视角
 
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/turtle绘图窗体.png" alt="turtle绘图窗体" width="60%">
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/turtle库坐标与角度.png" alt="turtle库坐标与角度" width="100%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/turtle绘图窗体.png" alt="turtle绘图窗体" width="40%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/turtle库坐标与角度.png" alt="turtle库坐标与角度" width="60%">
 
 海龟默认方向水平向右，初始位置(0,0)，即画布中央。
 有一系列函数从绝对坐标系/角度与海龟坐标系/角度控制海龟的方向。
@@ -466,25 +466,25 @@ turtle.circle(r, angle)
 
 - 时间获取
 
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/time库时间获取函数.png" alt="time库时间获取函数" width="80%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/time库时间获取函数.png" alt="time库时间获取函数" width="50%">
 
 - 时间结构体与时间字符串相互转换
 
 时间结构体转换为格式化字符串
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/strftime函数.png" alt="strftime函数" width="80%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/strftime函数.png" alt="strftime函数" width="50%">
 
 格式化时间字符串转换为时间结构体
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/strptime函数.png" alt="strptime函数" width="80%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/strptime函数.png" alt="strptime函数" width="50%">
 
 - 程序计时
 
-<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/计时函数.png" alt="计时函数" width="80%">
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/计时函数.png" alt="计时函数" width="50%">
 
 **设计进度条的一些函数**
 
 <details>
     <summary>点击查看详细内容</summary>
-    <img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/进度条函数.png" alt="进度条函数" width="80%">
+    <img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/进度条函数.png" alt="进度条函数" width="50%">
 </details>
 
 ---

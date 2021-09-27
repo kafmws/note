@@ -88,33 +88,49 @@ end
 J = -1/m * J + penalty;
 % J = -1/m * trace(y_matrix*log(output)' + (1-y_matrix)*log(1-output)') + penalty;
 
-%   =====get sample output vector=====
-y_matrix = zeros(num_labels, m);
-for i=1:length(y)
-    y_matrix(y(i), i) = 1;
-end
-%   =====get sample output vector=====
-
 % back propagation
-DELTA1 = 0;
-DELTA2 = 0;
-for t=1:m
-    a2(:, t) = [1; ]sigmoid(Theta1 * [1; X(t,:)(:)]);
-    a3(:, t) = sigmoid(Theta2 * [1; a2(:, t)(:)]);
-    
-    delta3(:, t) = a3(:, t) - y_matrix(:, t);
-    delta2(:, t) = Theta2' * delta3(:, t)...
-                   .* [1; a2(:, t)] .* [1; (1 - a2(:, t))];
-    
-    DELTA1 = DELTA1 + delta2(:, t) * a2(:, t)'; % remove delta2_0
-    DELTA2 = DELTA2 + delta3(:, t) * a3(:, t)';
+%   data-driven forward propagation
+a={X};      % activation
+z={X};
+m = m;
+theta = {Theta1, Theta2};
+layer_size = [input_layer_size hidden_layer_size num_labels];
+L = length(layer_size);
+for i=2:L
+    a{i-1} = [ones(size(a{i-1}), 1) a{i-1}];
+    z = [z; a{i-1} * theta{i-1}'];
+    a = [a; sigmoid(z{i})];
+end
+%   data-driven back propagation
+%   =====get sample output vector=====
+y_matrix = zeros(m, num_labels);
+for i=1:length(y)
+    y_matrix(i, y(i)) = 1;
+end
+%   =====get sample output vector=====
+delta={};
+delta{L} = a{L} - y_matrix;
+for i=fliplr(2:L-1)
+    delta{i} = delta{i+1} * theta{i} .* a{i} .* (1-a{i});
 end
 
-D1 = DELTA1 ./ m;
-D2 = DELTA2 ./ m;
+delta{2} = delta{2}(:, 2:end); % remove delta^2_0
 
-Theta1_grad = D1;
-Theta2_grad = D2;
+D={};
+for i=1:L-1
+    % DELTA = [DELTA; delta{i+1}' * a{i}];
+    D = [D; delta{i+1}' * a{i} ./ m];
+end
+
+% regularization
+for i=1:length(D)
+    for j=2:size(D{i})(2) % ignore bias theta
+        D{i}(:, j) = D{i}(:, j) + (lambda/m) * theta{i}(:, j);
+    end
+end
+
+Theta1_grad = D{1};
+Theta2_grad = D{2};
 
 % -------------------------------------------------------------
 

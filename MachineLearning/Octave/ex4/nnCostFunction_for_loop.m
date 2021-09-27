@@ -88,41 +88,34 @@ end
 J = -1/m * J + penalty;
 % J = -1/m * trace(y_matrix*log(output)' + (1-y_matrix)*log(1-output)') + penalty;
 
-% back propagation
-%   data-driven forward propagation
-a={X};      % activation
-z={X};
-m = m;
-theta = {Theta1, Theta2};
-layer_size = [input_layer_size hidden_layer_size num_labels];
-L = length(layer_size);
-for i=2:L
-    z = [z; [ones(m, 1) a{i-1}] * theta{i-1}'];
-    a = [a; sigmoid(z{i})];
-end
-%   data-driven back propagation
 %   =====get sample output vector=====
-y_matrix = zeros(m, num_labels);
+y_matrix = zeros(num_labels, m);
 for i=1:length(y)
-    y_matrix(i, y(i)) = 1;
-end 
+    y_matrix(y(i), i) = 1;
+end
 %   =====get sample output vector=====
-delta={};
-delta{L} = a{L} - y_matrix;
-for i=fliplr(2:L-1)
-    % delta{i} = delta{i+1} * theta{i}(:,2:end) .* a{i} .* (1-a{i});
-    delta{i} = (delta{i+1} * theta{i})(:, 2:end) .* (a{i} .* (1-a{i}));
+
+% back propagation
+DELTA1 = 0;
+DELTA2 = 0;
+for t=1:m
+    a1(:, t) = [1; X(t,:)(:)];
+    a2(:, t) = [1; sigmoid(Theta1 * a1(:, t))];
+    a3(:, t) = sigmoid(Theta2 * a2(:, t)(:));
+    
+    delta3(:, t) = a3(:, t) - y_matrix(:, t);
+    delta2(:, t) = (Theta2' * delta3(:, t)...
+                   .* (a2(:, t) .* (1 - a2(:, t))))(2:end);% remove delta2_0
+
+    DELTA1 = DELTA1 + delta2(:, t) * a1(:, t)';
+    DELTA2 = DELTA2 + delta3(:, t) * a2(:, t)';
 end
 
-D={};
-for i=1:L-1
-    % DELTA = [DELTA; delta{i+1}' * a{i}];
-    D = [D; delta{i+1}' * a{i} ./ m];
-end
+D1 = DELTA1 ./ m + [zeros(size(Theta1)(1), 1) (lambda / m) * Theta1(:, 2:end)];
+D2 = DELTA2 ./ m + [zeros(size(Theta2)(1), 1)  (lambda / m) * Theta2(:, 2:end)];
 
-% theta error
-Theta1_grad = [zeros(size(D{1}, 1), 1) D{1}];
-Theta2_grad = [zeros(size(D{2}, 1), 1) D{2}];
+Theta1_grad = D1;
+Theta2_grad = D2;
 
 % -------------------------------------------------------------
 

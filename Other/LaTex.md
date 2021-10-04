@@ -66,3 +66,15 @@ $$ \sum_{\begin{subarray}{l}
 - 其他
 \max
 \ldots，\cdots，\vdots，\ddots \dot
+
+- 间距
+
+| LaTex |  效果  |
+|:-----:|:------:|
+|`a\!b`|\( a\!b \)|
+|`ab`|\( ab \)|
+|`a\,b`|\( a\,b \)|
+|`a\;b`|\( a\;b \)|
+|`a\ b`|\( a\ b \)|
+|`a \quad b`|\( a \quad b \)|
+|`a \qquad b`|\( a \qquad b \)|

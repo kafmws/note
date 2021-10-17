@@ -222,7 +222,7 @@ end
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 
-%% =========== Part 8: Compute J_test =============
+%% =========== Part 9: Compute J_test =============
 lambda = 3; % the best value found
 theta = trainLinearReg(X_poly, y, lambda);
 
@@ -238,3 +238,41 @@ fprintf(['Cost of test set at lambda = 3: %f '...
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 
+%% =========== Part 9: Plotting learning curves with randomly selected examples =============
+multiple_error_val = [];    % [times, error]
+multiple_error_train = [];  % [times, error]
+
+p = 8;
+% Map X onto Polynomial Features and Normalize
+X_poly = polyFeatures(X, p);
+[X_poly, mu, sigma] = featureNormalize(X_poly);  % Normalize
+X_poly = [ones(m, 1), X_poly];                   % Add Ones
+% Map X_poly_val and normalize (using mu and sigma)
+X_poly_val = polyFeatures(Xval, p);
+X_poly_val = bsxfun(@minus, X_poly_val, mu);
+X_poly_val = bsxfun(@rdivide, X_poly_val, sigma);
+X_poly_val = [ones(size(X_poly_val, 1), 1), X_poly_val];
+
+lambda = 3;
+m_tarin = size(X_poly, 1);
+for cnt = 1:50    
+    random_perm = randperm(m_tarin);
+    random_train = X_poly(random_perm, :); % shuffle by row
+    random_y = y(random_perm, :);
+    for i = 1:m_tarin
+        theta = trainLinearReg(random_train(1:i, :), random_y(1:i, :), lambda);
+        multiple_error_train(cnt, i) = 1/(2*i) * sum((random_train(1:i, :) * theta - random_y(1:i, :)) .^ 2);
+        multiple_error_val(cnt, i) = 1/(2*m) * sum((X_poly_val *theta - yval) .^ 2);
+    end
+end
+
+multiple_error_val = mean(multiple_error_val);
+multiple_error_train = mean(multiple_error_train);
+
+plot(1:m, multiple_error_train, 1:m, multiple_error_val);
+
+title(sprintf('Polynomial Regression Learning Curve (lambda = %f)', lambda));
+xlabel('Number of training examples')
+ylabel('Error')
+axis([0 13 0 100])
+legend('Train', 'Cross Validation')

@@ -27,10 +27,10 @@ $$ f(x) = a - b \tag{1.1} $$
 |LaTex|符号|含义|LaTex|符号|含义|LaTex|符号|含义|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |\cdot|$\cdot$|点乘|\neq|$\neq$|不等于|\equiv|$\equiv$|恒等于/等价|
-|\ge\lt|$\ge\lt$|比较运算符|\approx|$\approx$|约等于号|\propto|$\propto$|正比|
+|\ge\lt|$\ge\lt$|比较运算符|\approx|$\approx$|约等于号|\propto|\gg\ll|$\gg\ll$|远大于远小于|
 |\sim|$\sim$|相似|\bmod|$\bmod$|模|\times\div|$\times\div$|乘除|
-|\pm|$\pm$|加减||\mp|$\mp$|减加|\sin{x}\arcsin{x}|$\sin{x}\arcsin{x}$|正弦反正弦|
-|\log{N}\ln{N}|$\log{N} \ln{N}$|\stackrel*=|$ \stackrel*= $|二元运算符叠加符号|
+|\pm|$\pm$|加减|\mp|$\mp$|减加|\sin{x}\arcsin{x}|$\sin{x}\arcsin{x}$|正弦反正弦|
+|\log{N}\ln{N}|$\log{N} \ln{N}$|对数|\stackrel*=|$ \stackrel*= $|二元运算符叠加符号|\propto|$\propto$|正比|
 
 - 上下标
 
@@ -41,6 +41,10 @@ $$ f(x) = a - b \tag{1.1} $$
 - 上下限运算符
 `\lim_{x\to\inf}`$$ \lim_{x\to\infty} $$
 
+`\sum_{\begin{subarray}{l}
+    0\le i\le n \\
+    j\in \mathbb{R}
+\end{subarray}}^j`
 $$ \sum_{\begin{subarray}{l}
     0\le i\le n \\
     j\in \mathbb{R}
@@ -78,3 +82,6 @@ $$ \sum_{\begin{subarray}{l}
 |`a\ b`|\( a\ b \)|
 |`a \quad b`|\( a \quad b \)|
 |`a \qquad b`|\( a \qquad b \)|
+
+
+https://blog.csdn.net/Ying_Xu/article/details/51240291

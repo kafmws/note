@@ -6,6 +6,7 @@
     - [系统log管理，例：开启 cron 的 log](#系统log管理例开启-cron-的-log)
 - [常用换源](#常用换源)
     - [Anaconda 换源](#anaconda-换源)
+      - [Anaconda 添加代理](#anaconda-添加代理)
     - [pip 换源](#pip-换源)
 
 <!-- /code_chunk_output -->
@@ -57,6 +58,17 @@ custom_channels:
 运行 `conda clean -i` 清除索引缓存，保证用的是镜像站提供的索引。
 
 运行 `conda create -n myenv numpy` 测试一下吧。
+
+##### Anaconda 添加代理
+`.condarc`中添加
+```bash
+proxy_servers:
+  http: http://[username:password@]ip:port 
+  https: https://[username:password@]ip:port
+ssl_verify: false
+use_pip: true
+```
+`[username:password@]`中`[]`表示可选
 
 #### pip 换源
 

@@ -84,6 +84,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 ```bash
 pip install pip -U
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# https://pypi.org/simple
 ```
 如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
 ```bash

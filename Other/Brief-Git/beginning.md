@@ -134,3 +134,17 @@ On branch master
 nothing to commit, working tree clean
 ```
 类似地，`git restore --staged <filename>`命令在`commit`前可取消对文件改动的`add`操作
+
+## 分支管理
+
+#### 查看分支
+
+```bash
+git branch
+```
+
+#### 删除分支
+
+```bash
+git branch -d $branch_name
+```

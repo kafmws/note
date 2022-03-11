@@ -2,7 +2,8 @@ plethora                    n.          过多；过量；过剩
 perturbation                n.          忧虑, 不安, 烦恼, 摄动, 微扰；扰动
 saturation                  n.          饱和
 occlusion                   n.          遮挡
-
+paradigm                    n.          范例，范式
+commonality                 n.          共性
 
 
 
@@ -32,6 +33,8 @@ heterogeneous               adj.        各种各样的，不同种类（组成�
 aforementioned              adj.        前述的，上述的
 drastical                   adj.        彻底的；激烈的
 pivotal                     adj.        关键的
+empirical                   adj.        经验的
+Intuitively                 adv.        直观地；直觉上
 
 ----
 i.e.                        id est(拉丁文)          也就是，亦即

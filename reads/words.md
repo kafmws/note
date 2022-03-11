@@ -1,21 +1,7 @@
-plethora            n.          过多；过量；过剩
-
-
-
-
-
-
-
-
-
-
-----
-mitigate            vt.         减轻；缓和
-impede              vt.         妨碍；阻碍；阻止
-degrade             vt.         低, 分解, 降低…身份, 侮辱…的人格, 使受屈辱，(使)退化，削弱
-bypass              vt.         绕过，避开
-                    n.          旁路，分流术，旁通管
-facilitate          vt.         促进，促成；便于
+plethora                    n.          过多；过量；过剩
+perturbation                n.          忧虑, 不安, 烦恼, 摄动, 微扰；扰动
+saturation                  n.          饱和
+occlusion                   n.          遮挡
 
 
 
@@ -24,5 +10,28 @@ facilitate          vt.         促进，促成；便于
 
 
 ----
-impractical         adj.        不切实际的
-arguably            adv.        可以，按理说
+mitigate                    vt.         减轻；缓和
+impede                      vt.         妨碍；阻碍；阻止
+degrade                     vt.         低, 分解, 降低…身份, 侮辱…的人格, 使受屈辱，(使)退化，削弱
+bypass                      vt.         绕过，避开
+                            n.          旁路，分流术，旁通管
+facilitate                  vt.         促进，促成；便于
+exacerbate                  vt.         加剧；恶化；触怒；使...生气
+plunge                      vt.         跳水，跳进，暴跌
+
+
+
+
+
+----
+impractical                 adj.        不切实际的
+arguably                    adv.        可以，按理说
+seminal                     adj.        开创性的
+homogeneous                 adj.        同种类的, 由相同(或同类型)事物(或人)组成的
+heterogeneous               adj.        各种各样的，不同种类（组成）的；异构的
+aforementioned              adj.        前述的，上述的
+drastical                   adj.        彻底的；激烈的
+pivotal                     adj.        关键的
+
+----
+i.e.                        id est(拉丁文)          也就是，亦即

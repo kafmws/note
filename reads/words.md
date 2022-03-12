@@ -4,6 +4,7 @@ saturation                  n.          饱和
 occlusion                   n.          遮挡
 paradigm                    n.          范例，范式
 commonality                 n.          共性
+metrics                     n.          指标
 
 
 

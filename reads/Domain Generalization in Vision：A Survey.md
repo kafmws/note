@@ -51,7 +51,7 @@ multi-source DG: 源数据来源于多个相关联但不同的分布
 同构 DG ：源域与目标域的标签空间相同
 异构 DG ：源域与目标域的标签空间不同
 
-异构环境下对DG方法的评估，图像分类任务需要为新域的标签空间训练分类器。而像图片匹配任务，就可以直接使用学习到的特征表示。（并没有新的标签空间）
+异构环境下对DG方法的评估，图像分类任务需要为新域的标签空间训练分类器。而像图片匹配任务，就可以直接使用学习到的特征表示（因为并没有新的标签空间）。
 
 
 ## DG 常用数据集
@@ -103,7 +103,7 @@ TL 和 DG 的关键区别在于目标数据是否可用。相同之处在于源�
 
 ZSL 和 DG 目标都是处理未知的分布。
 但 ZSL 的域偏移主要由标签空间的变化（$P_Y$）导致（C. H. Lampert, H. Nickisch, and S. Harmeling, “Attribute-based classification for zero-shot visual object categorization,” TPAMI, 2014.），其主要任务是==识别新类别==，广义上的 ZSL既识别旧类别又识别新类别（W.-L. Chao, S. Changpinyo, B. Gong, and F. Sha, “An empirical study and analysis of generalized zero-shot learning for object recognition in the wild,” in ECCV, 2016. ==野生动物相关==）
-而在 DG 中，域偏移主要是协变量（co-variate shift, K. Muandet, D. Balduzzi, and B. Scholkopf, “Domain generalization via invariant feature representation,” in ICML, 2013.）偏移导致的，即源数据输入特征和目标数据输入特征的不同（输入变量边缘分布的改变）。
+而在 DG 中，域偏移主要是协变量（co-variate shift, K. Muandet, D. Balduzzi, and B. Scholkopf, “Domain generalization via invariant feature representation,” in ICML, 2013.）偏移导致的，即源数据输入特征和目标数据输入特征的不同（输入变量边缘分布的改变，而一般不考虑新的标签，$ Y $ 的改变）。
 
 因为训练集和测试集标签空间不相交，ZSL 的通常做法是把输入图片映射到特征空间（Y. Xian, C. H. Lampert, B.  Schiele, and Z. Akata, “Zero-shot learning—a comprehensive evaluation of the good, the bad and the ugly,” TPAMI, 2018.）而非标签。但 DG 也开始利用特征来学习可在域间泛化的表征。（C. Gan, T. Yang, and B. Gong, “Learning attributes equals multi-
 source domain generalization,” in CVPR, 2016.）
@@ -120,3 +120,10 @@ DA 与 DG 存在许多共性，如 single-source DA, multi-source DA, heterogene
 ## 方法（Methodology）：
 大多数现有的 DG 方法为 multi-source 域泛化设计，尽管一些方法没有明确要求域标签，因此也可以作为单源域泛化方法。
 
+1. 域对齐（domain alignment）
+
+大多数现有的 DG 方法属于域对齐，中心思想是最小化源域间的差异以学习域不变表征。认为相对于源域间的偏移具有不变性的特征，其不变性在任何未见过的目标域上也具有健壮性。（需要域标签）
+
+为了衡量域之间的距离以进行对齐，产生了许多统计距离指标，如 $l_2$ 距离，$f$-divergences，更复杂的 `Wasserstein distance`等等。
+
+DG 中一个普遍的假设域偏移仅仅是输入数据边缘分布 $ P(X) $ 的改变，而 $ P(Y|X) $ 是相对稳定的，因此许多域对齐方法集中注意力于对齐源域的边缘分布。

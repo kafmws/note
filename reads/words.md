@@ -36,6 +36,8 @@ drastical                   adj.        彻底的；激烈的
 pivotal                     adj.        关键的
 empirical                   adj.        经验的
 Intuitively                 adv.        直观地；直觉上
+off-the-shelf               adj.        现成的
+
 
 ----
 i.e.                        id est(拉丁文)          也就是，亦即

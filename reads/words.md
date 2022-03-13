@@ -37,6 +37,7 @@ pivotal                     adj.        关键的
 empirical                   adj.        经验的
 Intuitively                 adv.        直观地；直觉上
 off-the-shelf               adj.        现成的
+detrimental                 adj.        有害的，不利的
 
 
 ----

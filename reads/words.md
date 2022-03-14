@@ -38,7 +38,12 @@ empirical                   adj.        经验的
 Intuitively                 adv.        直观地；直觉上
 off-the-shelf               adj.        现成的
 detrimental                 adj.        有害的，不利的
+intrinsic                   adj.        固有的
+scalable                    adj.        可扩展的
+correlated                  adj.        相关的
+
 
 
 ----
-i.e.                        id est(拉丁文)          也就是，亦即
+i.e.                        abbr.       id est(拉丁文)，也就是，亦即
+in terms of                 prep.       按照

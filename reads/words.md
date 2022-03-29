@@ -5,6 +5,7 @@ occlusion                   n.          遮挡
 paradigm                    n.          范例，范式
 commonality                 n.          共性
 metrics                     n.          指标
+granularity                 n.          粒度；颗粒性，成粒性；
 
 
 
@@ -20,6 +21,7 @@ bypass                      vt.         绕过，避开
 facilitate                  vt.         促进，促成；便于
 exacerbate                  vt.         加剧；恶化；触怒；使...生气
 plunge                      vt.         跳水，跳进，暴跌
+impose                      vt.         施加
 
 
 
@@ -41,6 +43,8 @@ detrimental                 adj.        有害的，不利的
 intrinsic                   adj.        固有的
 scalable                    adj.        可扩展的
 correlated                  adj.        相关的
+temporal                    adj.        时间的；世俗的；现世的；太阳穴的
+                            n.          太阳穴；世俗的权力；一时的事物
 
 
 

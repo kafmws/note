@@ -34,9 +34,9 @@ Ioffe and Szegedy提出的批量规范化影响深远，通过规范化特征统
 
 给定一个batch $ x \in \mathbb{R}^{N\times C \times H \times W} $ 作为输入，BN 将每个通道的均值和标准差规范化。
 \[
-    BN(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)} + \beta)
+    BN(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)}) + \beta
 \]
-其中，$ \gamma, \beta \in \mathbb{R}^C $是从数据中得到的仿射参数。$ \mu(x), \sigma(x) \in \mathbb{R}^C $是均值和标准差，每个特征通道的均值和标准差由 batch 的大小和空间维度计算得到：
+其中，$ \gamma, \beta \in \mathbb{R}^C $是从数据中学习到的仿射参数（`很可能是batch内数据得到，“are affine parameters learned from data”`）。$ \mu(x), \sigma(x) \in \mathbb{R}^C $是均值和标准差，每个特征通道的均值和标准差由 batch 的大小和空间维度计算得到：
 \[
     \mu_c(x) = \frac{1}{NHW}\sum_{n=1}^N\sum_{h=1}^H\sum_{w=1}^Wx_{nchw}
     \\
@@ -44,7 +44,8 @@ Ioffe and Szegedy提出的批量规范化影响深远，通过规范化特征统
 \]
 BN训练时使用mini-batch的统计数据，推理时使用全局统计数据，存在不一致。近来有 Batch Renormalization(BRN) 被提出在训练阶段逐渐过渡到全局统计数据。
 
-> style transfer 中很看重 $\mu, \sigma$，channel pruning 中比较看重 $\gamma, \beta$
+> 有观点认为 style transfer 中很看重 $\mu, \sigma$，channel pruning 中比较看重 $\gamma, \beta$
+...有观点认为 $\gamma, \beta$ 是 BN 的精髓，在归一化后进行还原，一定程度上保留原数据分布
 （BRN在batch size比较小、batch的统计数据非独立同分布情况下效果明显）
 BRN 认为在用每个batch的均值和方差来代替整体训练集的均值和方差时，可以再通过一个线性变换来逼近数据的真实分布
 \[
@@ -56,4 +57,54 @@ BRN 认为在用每个batch的均值和方差来代替整体训练集的均值�
 \]
 时，就达到了理想的效果。
 
-B
+一些拓展BN效果的规范化策略也被应用于递归（循环）架构。
+
+### 3.2 Instance Normalization
+原始的前馈风格化方法中，每个卷积层后存在一个BN层。令人惊讶的是，Ulyanov发现将BN层替换为IN层带来了巨大的改善。
+\[
+    IN(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)}) + \beta
+\]
+其中，$\mu(x), \sigma(x)$为每个样本的每个通道在空间维度上独立计算。
+\[
+    \mu_{nc}(x) = \frac{1}{HW}\sum_{h=1}^H\sum_{w=1}^Wx_{nchw}
+    \\
+    \sigma_{nc}(x) = \sqrt{\frac{1}{HW}\sum_{h=1}^H\sum_{w=1}^W(x_{nchw}-\mu_{nc}(x))^2 + \epsilon}
+\]
+另一个区别是IN层训练和测试期间保持不变，而BN层测试中通常使用整个数据集的统计数据。
+
+### 3.3 Conditional Instance Normalization
+Duomoulin等人提出了条件样本标准化（CIN layer）为每个风格学习一组参数 $\gamma^s$ 和 $\beta^s$，而不是一直不变的一组仿射参数。
+\[
+    CIN(x;s) = \gamma^s(\frac{x-\mu(x)}{\sigma(x)}) + \beta^s
+\]
+在Duomoulin的解决方案中，有32个风格和对应的 $\gamma^s$ 和 $\beta^s$ 可以选择。令人惊讶的是，使用相同的卷积参数仅仅IN层中的仿射参数不同，网络就可以生成不同风格的图片。
+与不包括标准化层的网络相比，CIN层需要额外 $2FS$ 个参数，其中 $F$ 为CIN层输入的特征图数量， $S$ 为所支持的风格数目。这意味着额外参数量随着可迁移的风格数量线性增长，因此难以拓展到大量甚至任意风格。并且添加或更改任意风格都需要重新训练网络（来学习对应的 $\gamma^s$ 和 $\beta^s$）。
+
+### 4. 样本规范化的解释
+尽管（条件）样本规范化效果非常好，但它在风格迁移中为何有效仍然难以解释。Ulyanov等人认为IN的效果归功于它在图像内容对比度上具有不变性。然而IN作用于特征空间，应当比简单作用于像素空间的对比度规范化有更大的影响。事实可能更令人惊讶，IN层的仿射参数能完全控制输出图像的风格。
+
+普遍认为DNN的卷积特征的统计数据能捕捉到图片的风格。Gatys等人使用二阶统计数据作为优化目标，Li等人近期证明了匹配许多其他的统计数据，例如通道层次的均值和方差对风格迁移也是有效的。受这些观察启发，我们认为样本规范化通过规范一些特征统计量（即均值和方差）形成了某种形式的风格规范化。虽然DNN作为图像的描述器工作，但我们认为生成器网络特征统计信息也能控制生成图像的风格。
+
+我们测试了单风格迁移的纹理网络发现IN模型收敛得比BN快。如图1所示。
+为了测试Ulyanov等人的解释，我们在亮度通道使用直方图均衡化将所有训练图片规范化到相同的对比度，再次测试，IN保持有效，说明Ulyanov等人的解释是不完善的。为了确认我们的假设，我们将所有训练图像转为非目标风格的同一风格，IN的提升效果小了许多。BN和IN间存在的gap可以解释为我们对训练图像所使用的风格迁移并不完美。并且，BN模型在风格规范化后的训练图像上和IN在原始训练图像上收敛的一样快。我们的实验说明了IN确实相当于执行某种风格规范化。
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/BN  vs IN.png" alt="BN  vs IN" width="100%">
+
+figure 1. BN layer v.s. IN layer
+
+因为 BN 以 batch 而不是样本为单位进行特征统计量的规范化，因此可以直观地理解为样本以 batch 为单位向某个风格规范化，然而每个样本有各自的风格，这是我们将相同风格迁移到所有图像时所不希望的。即使卷积层可能学会在 batch 内进行风格差异补偿，但这仍然为训练带来挑战。
+另一方面，IN可以将每个样本的风格规范化为目标风格，网络能关注于内容的处理并丢弃原风格信息，从而有利于训练。CIN 的成功也变得明了：不同的仿射参数将特征统计量规范化为不同的值，输出图像也就具有不同风格。
+
+### 5. Adaptive Instance Normalization
+如果说IN将输入规范化到仿射参数所确定的某个风格，那么有没有可能将IN适应到任意给定的风格呢？我们简单拓展了IN，提出了Adaptive Instance Normalization(AdaIn)。AdaIN 接受一个内容输入 $x$ 和一个风格输入 $y$，直接将内容输入 $x$ 的均值和方差按通道对齐到风格风格输入 $y$。与 BN/IN/CIN 不同，AdaIN 的仿射参数 $\gamma$ 和 $\beta$ 直接由风格输入计算得来，而非网络学习得到。
+\[
+    AdaIN(x,y) = \sigma(y)(\frac{x-\mu(x)}{\sigma(x)}) + \mu(y)
+\]
+
+> 内容输入归一化为正态分布后进行放缩、偏移，对齐到按照风格输入的分布
+
+其中，$\gamma = \sigma(y), \beta = \mu(y)$。与 IN 类似，这些统计数据是跨空间位置计算得到的。
+
+直观地说，想象一个检测某个风格的特征通道，一张风格图像中的这种笔划将对该特征产生高水平的激活，从而AdaIN的输出也会在这个特征上表现出相同的高水平激活，同时保留内容图像的空间结构。这种笔触特征能被前馈解码器反向转换到图像空间（像CNN那样）。特征通道的方差能编码更精细的风格信息，也被反映在 AdaIN 的输出和在最终输出的图像中。
+
+简而言之，AdaIN 通过迁移特征统计数据（具体说是通道层次的均值和方差）实现特征空间中的风格迁移。我们的 AdaIN 和 Chen and M. Schmidt 的 style swap 风格交换层扮演着同样的角色。

@@ -20,7 +20,7 @@ Gatys等人的框架基于一个迭代优化过程，通过损失网络最小化
 Ulyanov等提出了改善和提高生成图像的质量及多样性的方法。
 Chen and M. Schmidt等提出了能迁移到任意风格的前馈网络，其中的风格交换层用匹配最接近的风格特征以块到块的方式替换内容特征。尽管如此，风格交换层造成了新的计算瓶颈：对于521x512的输入图像，风格交换产生了超过95%的计算开销。我们的方法在允许任意风格迁移的同时比此方法快1~2个数量级。
 
-风格迁移的另一个核心问题是使用哪种风格损失函数。最初Gatys等人通过匹配Gram矩阵捕获的特征激活图之间的二阶统计量来匹配风格。其他有效的损失函数有马尔科夫随机场损失，对抗损失，直方图损失，CORAL loss，MMD loss 和通道均值和方差之间的距离。上述所有损失函数目的都是匹配风格图像和合成图像之间的某些特征统计信息。
+风格迁移的另一个核心问题是使用哪种风格损失函数。最初Gatys等人通过Gram矩阵捕获的特征激活图之间的二阶统计量匹配风格的统计量计算损失。其他有效的损失函数有马尔科夫随机场损失，对抗损失，直方图损失，CORAL loss，MMD loss 和通道均值和方差之间的距离。上述所有损失函数目的都是匹配风格图像和合成图像之间的某些特征统计信息。
 
 - 深度生成图像建模
 
@@ -34,7 +34,7 @@ Ioffe and Szegedy提出的批量规范化影响深远，通过规范化特征统
 
 给定一个batch $ x \in \mathbb{R}^{N\times C \times H \times W} $ 作为输入，BN 将每个通道的均值和标准差规范化。
 \[
-    BN(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)}) + \beta
+    {\rm BN}(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)}) + \beta
 \]
 其中，$ \gamma, \beta \in \mathbb{R}^C $是从数据中学习到的仿射参数（`很可能是batch内数据得到，“are affine parameters learned from data”`）。$ \mu(x), \sigma(x) \in \mathbb{R}^C $是均值和标准差，每个特征通道的均值和标准差由 batch 的大小和空间维度计算得到：
 \[
@@ -62,7 +62,7 @@ BRN 认为在用每个batch的均值和方差来代替整体训练集的均值�
 ### 3.2 Instance Normalization
 原始的前馈风格化方法中，每个卷积层后存在一个BN层。令人惊讶的是，Ulyanov发现将BN层替换为IN层带来了巨大的改善。
 \[
-    IN(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)}) + \beta
+    {\rm IN}(x) = \gamma(\frac{x-\mu(x)}{\sigma(x)}) + \beta
 \]
 其中，$\mu(x), \sigma(x)$为每个样本的每个通道在空间维度上独立计算。
 \[
@@ -75,7 +75,7 @@ BRN 认为在用每个batch的均值和方差来代替整体训练集的均值�
 ### 3.3 Conditional Instance Normalization
 Duomoulin等人提出了条件样本标准化（CIN layer）为每个风格学习一组参数 $\gamma^s$ 和 $\beta^s$，而不是一直不变的一组仿射参数。
 \[
-    CIN(x;s) = \gamma^s(\frac{x-\mu(x)}{\sigma(x)}) + \beta^s
+    {\rm CIN}(x;s) = \gamma^s(\frac{x-\mu(x)}{\sigma(x)}) + \beta^s
 \]
 在Duomoulin的解决方案中，有32个风格和对应的 $\gamma^s$ 和 $\beta^s$ 可以选择。令人惊讶的是，使用相同的卷积参数仅仅IN层中的仿射参数不同，网络就可以生成不同风格的图片。
 与不包括标准化层的网络相比，CIN层需要额外 $2FS$ 个参数，其中 $F$ 为CIN层输入的特征图数量， $S$ 为所支持的风格数目。这意味着额外参数量随着可迁移的风格数量线性增长，因此难以拓展到大量甚至任意风格。并且添加或更改任意风格都需要重新训练网络（来学习对应的 $\gamma^s$ 和 $\beta^s$）。
@@ -96,9 +96,9 @@ figure 1. BN layer v.s. IN layer
 另一方面，IN可以将每个样本的风格规范化为目标风格，网络能关注于内容的处理并丢弃原风格信息，从而有利于训练。CIN 的成功也变得明了：不同的仿射参数将特征统计量规范化为不同的值，输出图像也就具有不同风格。
 
 ## 5. Adaptive Instance Normalization
-如果说IN将输入规范化到仿射参数所确定的某个风格，那么有没有可能将IN适应到任意给定的风格呢？我们简单拓展了IN，提出了Adaptive Instance Normalization(AdaIn)。AdaIN 接受一个内容输入 $x$ 和一个风格输入 $y$，直接将内容输入 $x$ 的均值和方差按通道对齐到风格风格输入 $y$。与 BN/IN/CIN 不同，AdaIN 的仿射参数 $\gamma$ 和 $\beta$ 直接由风格输入计算得来，而非网络学习得到。
+如果说IN将输入规范化到仿射参数所确定的某个风格，那么有没有可能将IN适应到任意给定的风格呢？我们简单拓展了IN，提出了Adaptive Instance Normalization(AdaIN)。AdaIN 接受一个内容输入 $x$ 和一个风格输入 $y$，直接将内容输入 $x$ 的均值和方差按通道对齐到风格风格输入 $y$。与 BN/IN/CIN 不同，AdaIN 的仿射参数 $\gamma$ 和 $\beta$ 直接由风格输入计算得来，而非网络学习得到。
 \[
-    AdaIN(x,y) = \sigma(y)(\frac{x-\mu(x)}{\sigma(x)}) + \mu(y)
+    {\rm AdaIN}(x,y) = \sigma(y)(\frac{x-\mu(x)}{\sigma(x)}) + \mu(y)
 \]
 
 > 内容输入归一化为正态分布后进行放缩、偏移，对齐到按照风格输入的分布
@@ -158,10 +158,77 @@ AdaIN layer 以编码器 $f$ 输出的内容特征图和风格特征图作为输
 3) 灵活的基于块的方法
 
 <img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移效果对比图.png" alt="风格迁移效果对比图" width="100%">
+
+|研究者|研究|
+|:---:|:---:|
+|Ulyanov等|改善图像质量和多样性、以 IN 代替 BN|
+|Chen and M. Schmidt等|style swap 块匹配|
+|Duomoulin等|CIN layer|
+|Ours|AdaIN|
+
+
 - 定性分析
+
 认为我们提出的方法效果有好有坏，但模型训练期间未见过测试风格，其他方法可能仅支持有限的风格因此测试风格就是训练风格。
 并且指出基于块匹配的方法(Chen and M. Schmidt)存在问题：如果大多数内容块只与一小部分风格块匹配，可能不具有目标风格的代表性，导致迁移失败。而他们的方法则从全局的特征统计数据进行匹配，更具普遍性。
 
 - 定量分析（对比损失）
-我们提出的方法是否为了速度和灵活性牺牲了迁移质量？如果是，牺牲了多少？对比 loss（修改了一些方法的损失函数进行对比，因为我们的方法基于IN计算损失）
 
+我们提出的方法是否为了速度和灵活性牺牲了迁移质量？如果是，牺牲了多少？对比 loss（修改了一些方法的损失函数进行对比，因为我们的方法基于 IN 计算损失）
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移损失定量比较.png" alt="风格迁移损失定量比较" width="60%">
+
+风格损失略高于单风格迁移方法，大约为DNN迭代优化方法迭代50~100次的效果，但仍远低于原始图像与目标风格间的损失。（注意该方法训练期间未见过测试风格）
+
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移速度比较.png" width="60%">
+
+> 括号中的速度为包含风格图像编码的时间（固定风格模型不需要重新编码，而任意风格模型通常需编码一次）。单位为秒。
+
+同现有支持任意风格迁移的方法相比有明显速度优势，同固定风格模型相比有明显速度优势。
+
+### 7.2 额外实验
+
+验证模型的架构选择。
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/AdaIN架构选择实验.png" alt="AdaIN架构选择实验" width="80%">
+
+> a 风格，b 内容，c 当前架构Encoder-AdaIN-Decoder，
+d Encoder-Concat-Decoder（内容叠加风格，baseline），
+e Encoder-AdaIN-Decoder_with_BN，
+f Encoder-AdaIN-Decoder_with_IN
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移训练曲线和损失.png" alt="风格迁移训练曲线和损失" width="80%">
+
+### 7.3 Runtime controls
+
+运行时控制进一步展现了模型的灵活性，这些控制仅需在运行时控制，无需重新训练网络。
+
+- 内容-风格 平衡
+
+1) 训练期间调节 content-style loss weight $\lambda$
+2) 测试期间对输入 Decoder 的特征图进行插值（等价于在 AdaIN 对仿射参数插值）
+\[
+    T(c,s,\alpha) = g((1-\alpha)f(c) + \alpha AdaIN(f(c), f(s)))
+\]
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移内容与风格平衡.png" alt="风格迁移内容与风格平衡" width="100%">
+
+- 风格插值
+
+将一组大小为 K 的风格 $s_1,s_2,\dots,s_k$ 分别以 $w_1,w_2,\dots,w_k$ 为权重按插值的形式迁移，同样在特征图中进行插值实现。
+
+\[
+    T(c,s_{1,2,\dots,k},w_{1,2,\dots,k}) = g(\sum_{k=1}^K w_k AdaIN(f(c),f(s_k)))
+\]
+且 \( \sum_{k=1}^K w_k = 1 \)
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移多个风格插值示例.png" alt="风格迁移多个风格插值示例" width="80%">
+
+- 位置和色彩控制
+
+Gatys等人最近介绍了用户对颜色信息和风格转移的空间位置的控制。为了保留内容图像的色彩分布，先将风格图像的色彩分布匹配到内容图像（与Gatys等人一样），然后将色彩对齐的风格图作为风格输入进行风格迁移。
+
+使用不同风格输入的统计数据，分别对内容特征图中的不同区域执行 AdaIN 实现位置控制。
+
+> 可以对全图执行AdaIN，但只对目标位置生效
+
+<img src="https://cdn.jsdelivr.net/gh/kafmws/pictures/notes/风格迁移位置和色彩控制效果示例.png" alt="风格迁移位置和色彩控制效果示例" width="80%">

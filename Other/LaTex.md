@@ -32,6 +32,8 @@ $$ f(x) = a - b \tag{1.1} $$
 |\pm|$\pm$|加减|\mp|$\mp$|减加|\sin{x}\arcsin{x}|$\sin{x}\arcsin{x}$|正弦反正弦|
 |\log{N}\ln{N}|$\log{N} \ln{N}$|对数|\stackrel*=|$ \stackrel*= $|二元运算符叠加符号|\propto|$\propto$|正比|
 
+双竖线/范数 \Vert
+
 - 上下标
 
 |LaTex|示例|LaTex|示例|LaTex|示例|LaTex|示例|LaTex|示例|
@@ -85,3 +87,10 @@ $$ \sum_{\begin{subarray}{l}
 
 
 https://blog.csdn.net/Ying_Xu/article/details/51240291
+
+- 数学字体
+| LaTex |  效果  |
+|:-----:|:------:|
+|`\mathbb{R}`|\( \mathbb{R} \)|
+|`\mathcal{R}`|\( \mathcal{R} \)|
+|`\mathscr{R}`|\( \mathscr{R} \)|

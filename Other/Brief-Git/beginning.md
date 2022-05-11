@@ -12,6 +12,11 @@
       - [提交文件](#提交文件)
       - [比较文件具体变动](#比较文件具体变动)
       - [提交改动](#提交改动)
+  - [分支管理](#分支管理)
+      - [查看分支](#查看分支)
+      - [删除分支](#删除分支)
+  - [查看/修改远程仓库地址](#查看修改远程仓库地址)
+  - [Git 设置代理](#git-设置代理)
 
 <!-- /code_chunk_output -->
 
@@ -147,4 +152,23 @@ git branch
 
 ```bash
 git branch -d $branch_name
+```
+
+## 查看/修改远程仓库地址
+```bash
+#查看
+git remote -v
+
+#修改
+git remote set-url origin [url]
+```
+
+## Git 设置代理
+取消、添加代理
+```bash
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+git config --global http.proxy http://127.0.0.1:10809
+git config --global https.proxy http://127.0.0.1:10809
 ```

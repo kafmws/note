@@ -35,14 +35,14 @@ cfw-bypass:
 proxies:
   - name: vps
     type: trojan
-    server: www.kafm.xyz
+    server: 
     port: 443
-    password: happysurf
+    password: 
     alpn:
       - h2
       - http/1.1
-  - { name: "vpsssr", type: ssr, server: "2a00:b700::9:158", port: 2333, password: "happysurf", cipher: "aes-256-cfb", protocol: "auth_sha1_v4", obfs: "http_simple" } #185.22.153.25
-  - { name: "vpsss", type: ss, server: "2a00:b700::9:158", port: 2333, password: "happysurf", cipher: "aes-256-cfb", protocol: "auth_sha1_v4", obfs: "http_simple" }
+  - { name: "vpsssr", type: ssr, server: "", port: , password: "", cipher: "aes-256-cfb", protocol: "auth_sha1_v4", obfs: "http_simple" }
+  - { name: "vpsss", type: ss, server: "", port: , password: "", cipher: "aes-256-cfb", protocol: "auth_sha1_v4", obfs: "http_simple" }
   # - name: Debug
   #   type: socks5
   #   server: 127.0.0.1

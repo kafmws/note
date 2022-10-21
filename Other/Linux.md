@@ -31,6 +31,18 @@ service rsyslog restart
 service cron restart
 ```
 
+#### 查找特定文件
+```bash
+sudo find   /                   -name "*filename"   -type             d   -print
+        在什么目录下找           按名查找（可按时间）  文件类型
+b 块设备文件    d 目录　　      c 字符设备文件
+p 管道文件      l 符号链接文件  f 普通文件
+
+find / -mtime -1 |head  查找系统内最近24小时修改过的文件
+
+find / -mmin  -15|head   查找系统内最近15 分钟修改过的文件
+```
+
 ## 常用换源
 
 #### Anaconda 换源

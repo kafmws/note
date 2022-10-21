@@ -17,6 +17,8 @@
       - [删除分支](#删除分支)
   - [查看/修改远程仓库地址](#查看修改远程仓库地址)
   - [Git 设置代理](#git-设置代理)
+- [其他操作](#其他操作)
+  - [强制版本回退](#强制版本回退)
 
 <!-- /code_chunk_output -->
 
@@ -172,3 +174,16 @@ git config --global --unset https.proxy
 git config --global http.proxy http://127.0.0.1:10809
 git config --global https.proxy http://127.0.0.1:10809
 ```
+
+---
+
+# 其他操作
+
+## 强制版本回退
+
+查看版本历史记住目标版本 commit hash编号前几位 xxxx
+
+```bash
+git reset --hard xxxx
+```
+将仓库强制设定为某个commit版本

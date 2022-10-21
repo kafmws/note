@@ -41,7 +41,10 @@ $$ f(x) = a - b \tag{1.1} $$
 |X^2|$ X^2 $|N_+|$ N_+ $|f''_{xy}(x,y)|$ f''_{xy}(x,y) $|\frac<br>\tfrac<br>\dfrac{x}{y}|$ \dfrac{x}{y} $|\sqrt[n]{...}|$ \sqrt[n]{\frac{x}{y}} $|
 
 - 上下限运算符
-`\lim_{x\to\inf}`$$ \lim_{x\to\infty} $$
+`\lim_{x\to\inf}` $ \lim_{x\to\infty} $
+
+`\sum^n` $ \sum^n $ `\sum\limits^n` $ \sum\limits^n $
+`\sum_{i=1}`  $ \sum_{i=1} $  `\sum\limits_{i=1}` $ \sum\limits_{i=1} $
 
 `\sum_{\begin{subarray}{l}
     0\le i\le n \\
